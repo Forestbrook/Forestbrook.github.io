@@ -1,6 +1,5 @@
 # Visual Studio User-specific files
 .vs/
-
 *.suo
 *.user
 *.userosscache
@@ -13,7 +12,6 @@
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
-
 
 # Idea files
 .idea/*
