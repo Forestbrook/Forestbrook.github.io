@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Blazor test 1
+categories: blazor
 tags: [Test, Color, Markdown]
 color: brown
 author: sylhare
