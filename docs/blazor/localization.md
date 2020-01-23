@@ -33,10 +33,9 @@ I found several solutions on the web with workarounds for this (see [References]
 
 1. Add a resource library project **BlazorExample.ResourceLibrary**. See description [Create a resource library project](/docs/asp-net-core/localize-app-and-api#create-a-resource-library-project). _Skip this step if you want to use a database or other source of translations instead of .resx files._
 
-1. Edit Startup.cs in **BlazorExample.Api** as described in [Startup.cs configuration in your Web and/or Api projects](/docs/asp-net-core/localize-app-and-api#startupcs-configuration-in-your-web-andor-api-projects).
+1. Edit Startup.cs in **BlazorExample.Api** to use the resource library as described in [Startup.cs configuration in your Web and/or Api projects](/docs/asp-net-core/localize-app-and-api#startupcs-configuration-in-your-web-andor-api-projects).
 You can skip `AddDataAnnotationsLocalization` and `AddViewLocalization`.
 _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs._
-
 
 ## Create the GetLanguage and SetLanguage Api actions
 
@@ -500,10 +499,10 @@ We need some simple services and components at the client side to load and use t
 
     <SurveyPrompt Title="@Translation["How is Blazor working for you?"]" />
    ```
-1. Add the translations to **SharedResource.nl.resx**:
-   Welcome - Welkom
-   Welcome to your new app - Welkom in uw nieuwe app
-   How is Blazor working for you? - Hoe bevalt Blazor?
+1. Add the translations to **SharedResource.nl.resx**:<br/>
+   Welcome - Welkom<br/>
+   Welcome to your new app - Welkom in uw nieuwe app<br/>
+   How is Blazor working for you? - Hoe bevalt Blazor?<br/>
    Select Language - Selecteer taal
 
 1. Set **BlazorExample.Api** as startup project and run. When you select **Nederlands** the app will show:

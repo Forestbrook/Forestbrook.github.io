@@ -57,7 +57,7 @@ services.AddLocalization(options => options.ResourcesPath = "Resources");
 // This line is only needed to be able to lookup your localization options in a controller, view or service:
 services.AddSingleton(CreateRequestLocalizationOptions());
 
-// Change existing line:
+// Change existing line (SKIP THIS in Api project):
 services.AddControllersWithViews() // or AddControllers(), AddMvc(), etc.
     // Add this line if you want to use your shared resources in the data annotations:
     .AddDataAnnotationsLocalization(options => { options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(SharedResource)); })
