@@ -5,8 +5,8 @@ has_children: false
 nav_order: 1
 ---
 
-_Last update: January 23, 2020_
-Source code in Git: [ASP.NET Localization Example](todo){:target="_blank"}
+| :-- | --: |
+|_Last update: January 23, 2020_|Source code in Git: [ASP.NET Localization Example](todo){:target="_blank"}|
 
 ## Localization of a MVC WebApplication and an Api
 
