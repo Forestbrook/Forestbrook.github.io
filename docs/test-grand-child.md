@@ -1,7 +1,7 @@
 ---
 title: Granchild of Test
-parent: Child of Test
-grand_parent: Test
+parent: Create Project
+grand_parent: Blazor
 nav_order: 1
 ---
 

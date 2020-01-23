@@ -1,6 +1,6 @@
 ---
-title: Child of Test
-parent: Test
+title: Create Project
+parent: Blazor
 has_children: true
 nav_order: 1
 ---

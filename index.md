@@ -1,4 +1,4 @@
-# Knowledge Base
+# Home
 
 ## Create the GetLanguage and SetLanguage Api actions
 
