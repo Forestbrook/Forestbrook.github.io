@@ -5,6 +5,9 @@ has_children: false
 nav_order: 1
 ---
 
+_Last update: January 23, 2020_
+Source code in Git: [ASP.NET Localization Example](todo){:target="_blank"}
+
 ## Localization of a MVC WebApplication and an Api
 
 See also: [Globalization and localization in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization){:target="_blank"}
@@ -21,7 +24,7 @@ I like to put my resources in a separate resource library project to be able to 
 1. You can set the **TargetFramework** of the project to **netstandard2.1**.
 1. Remove **Class1.cs**.
 1. Create a **Resources** folder (not required, you can also put your resources in the root).
-1. I use only one set of shared resources, but if you like you can also add view and controller resources as described in [Resource file naming](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#resource-file-naming).
+1. I use only one set of shared resources, but if you like you can also add view and controller resources as described in [Resource file naming](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization#resource-file-naming){:target="_blank"}.
 1. Add resource files for the languages you support like **SharedResource.en.resx** and **SharedResource.nl-NL.resx**: Right-click on the Resources folder, choose **Add** > **New item...** and select the **Resources File** template.
 1. In the project root add an empty marker class **SharedResource** like this:
    ```cs

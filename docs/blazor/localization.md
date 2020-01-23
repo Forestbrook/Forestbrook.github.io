@@ -5,12 +5,13 @@ has_children: false
 nav_order: 2
 ---
 
-_Last update: January 22, 2020_
+_Last update: January 23, 2020_
+Source code in Git: [Blazor Localization Example](todo){:target="_blank"}
 
 # Blazor Localization
 
 This solution:
-* Is intended for [Blazor WebAssembly](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models#blazor-webassembly). 
+* Is intended for [Blazor WebAssembly](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models#blazor-webassembly){:target="_blank"}. 
 * Reads the translations from your Api when the Blazor app is started and when the language is changed.
 * Can be used with translations in **.resx files**, in a **translations database** or with any **other source of translations**.
 * Using translations on a page is just as easy as inserting **`@Translation["Welcome"]`**.
@@ -28,9 +29,9 @@ I found several solutions on the web with workarounds for this (see [References]
 
 ## Create the project
 
-1. Create the initial BlazorExample solution as described in my reference blog [Create a new Blazor WebAssembly project with an ASP.NET Core Api](/Forestbrook-reference-and-examples/Blazor/create%2Dproject).
+1. Create the initial BlazorExample solution as described in my reference blog [Create a new Blazor WebAssembly project with an ASP.NET Core Api](create-project).
 
-1. Add a resource library project and edit Startup.cs (in BlazorExample.Api) as described in [Localization of a MVC WebApplication and an Api](/Forestbrook-reference-and-examples/ASP.NET-Core/Localization-of-a-MVC-WebApplication-and-an-Api). _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs in BlazorExample.Api._
+1. Add a resource library project and edit Startup.cs (in BlazorExample.Api) as described in [Localization of a MVC WebApplication and an Api](localize-app-and-api). _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs in BlazorExample.Api._
 
 ## Create the GetLanguage and SetLanguage Api actions
 
@@ -361,7 +362,7 @@ We need some simple services and components at the client side to load and use t
 
 1. In the BlazorExample.Client project add a folder **Components**.
 
-1. In the Components folder, add a new class **ComponentWithTranslations.cs**. I use the [Dispose pattern](https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose), so if you also need to dispose in page, you can override `Dispose(bool disposing)` (don't forget to call `base.Dispose(disposing)`:
+1. In the Components folder, add a new class **ComponentWithTranslations.cs**. I use the [Dispose pattern](https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose){:target="_blank"}, so if you also need to dispose in page, you can override `Dispose(bool disposing)` (don't forget to call `base.Dispose(disposing)`:
    ```cs
     using BlazorExample.Abstractions;
     using Microsoft.AspNetCore.Components;
@@ -507,11 +508,11 @@ We need some simple services and components at the client side to load and use t
 
 ## References
 
-See: [Blazor localization](https://github.com/aspnet/AspNetCore.Docs/issues/13436)
+See: [Blazor localization](https://github.com/aspnet/AspNetCore.Docs/issues/13436){:target="_blank"}
 
-See: https://gametorrahod.com/workaround-for-client-side-blazor-localization-with-resx/
+See: [https://gametorrahod.com/workaround-for-client-side-blazor-localization-with-resx/](https://gametorrahod.com/workaround-for-client-side-blazor-localization-with-resx/){:target="_blank"}
 
-See: https://dev.to/j_sakamoto/how-to-localize-texts-in-your-blazor-app-phn
+See: [https://dev.to/j_sakamoto/how-to-localize-texts-in-your-blazor-app-phn](https://dev.to/j_sakamoto/how-to-localize-texts-in-your-blazor-app-phn){:target="_blank"}
 
-See: https://remibou.github.io/I18n-with-Blazor-and-ASPNET-Core/
+See: [https://remibou.github.io/I18n-with-Blazor-and-ASPNET-Core/](https://remibou.github.io/I18n-with-Blazor-and-ASPNET-Core/){:target="_blank"}
 

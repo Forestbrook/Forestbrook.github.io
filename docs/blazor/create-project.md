@@ -5,15 +5,16 @@ has_children: false
 nav_order: 1
 ---
 
-_Last update: January 17, 2020_
+_Last update: January 23, 2020_
+Source code in Git: [Create Blazor WebAssembly with Api Example](todo){:target="_blank"}
 
 ## Create a new Blazor WebAssembly project with an ASP.NET Core Api
 
-You can host a Blazor WebAssembly App as a static website, e.g. in [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website), but because we use an ASP.NET Core Api, I prefer to use the Api project for hosting. Mind that this is **NOT** the same as a Blazor Server App!
+You can host a Blazor WebAssembly App as a static website, e.g. in [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website){:target="_blank"}, but because we use an ASP.NET Core Api, I prefer to use the Api project for hosting. Mind that this is **NOT** the same as a Blazor Server App!
 
 ## Preparations
 
-* See for more details: [Get started with ASP.NET Core Blazor (in Microsoft Docs)](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started).
+* See for more details: [Get started with ASP.NET Core Blazor (in Microsoft Docs)](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started){:target="_blank"}.
 
 * When you have the latest version of Visual Studio installed and up-to-date, the required .NET Core 3.1 (or later) SDK should be already present. But because Blazor WebAssembly is in preview, you must install the template for the Blazor WebAssembly App (_you might even need to reinstall it after a Visual Studio update_). Run in a command prompt:
 
