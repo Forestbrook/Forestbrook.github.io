@@ -502,9 +502,9 @@ We need some simple services and components at the client side to load and use t
    Select Language - Selecteer taal
 
 1. Set **BlazorExample.Api** as startup project and run. When you select **Nederlands** the app will show:
-   ![Welkom.png](/.attachments/Welkom-74645955-3bbb-4d73-9d0e-1bb205535ac4.png)
+   ![Welkom.png](/assets/images/blazor-localization-welkom.png)
    Change to **English** and the app will show:
-   ![Welcome.png](/.attachments/Welcome-979a1947-4ad5-4105-8d28-35fd6c1264f7.png)
+   ![Welcome.png](/assets/images/blazor-localization-welcome.png)
 
 ## References
 
