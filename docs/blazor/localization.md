@@ -5,8 +5,8 @@ has_children: false
 nav_order: 2
 ---
 
-_Last update: January 23, 2020_
-Source code in Git: [Blazor Localization Example](todo){:target="_blank"}
+_Last update: January 23, 2020_<br/>
+Source code in Git: [Blazor Localization Example](https://github.com/Forestbrook/BlazorLocalizationExample){:target="_blank"}
 
 # Blazor Localization
 

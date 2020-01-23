@@ -6,7 +6,7 @@ nav_order: 1
 ---
 
 _Last update: January 23, 2020_<br/>
-Source code in Git: [ASP.NET Localization Example](todo){:target="_blank"}
+Source code in Git: [ASP.NET Localization Example](https://github.com/Forestbrook/AspNetCoreLocalizationExample){:target="_blank"}
 
 ## Localization of a MVC WebApplication and an Api
 
