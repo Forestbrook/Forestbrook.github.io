@@ -37,6 +37,7 @@ I found several solutions on the web with workarounds for this (see [References]
 You can skip `AddDataAnnotationsLocalization` and `AddViewLocalization`.
 _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs._
 
+
 ## Create the GetLanguage and SetLanguage Api actions
 
 1. In the BlazorExample.Common project, add a **LanguageResources** class in the **Models** folder:
