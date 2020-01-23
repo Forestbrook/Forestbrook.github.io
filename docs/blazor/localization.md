@@ -31,7 +31,7 @@ I found several solutions on the web with workarounds for this (see [References]
 
 1. Create the initial BlazorExample solution as described in my reference blog [Create a new Blazor WebAssembly project with an ASP.NET Core Api](create-project).
 
-1. Add a resource library project and edit Startup.cs (in BlazorExample.Api) as described in [Localization of a MVC WebApplication and an Api](localize-app-and-api). _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs in BlazorExample.Api._
+1. Add a resource library project and edit Startup.cs (in BlazorExample.Api) as described in [Localization of a MVC WebApplication and an Api](/docs/asp-net-core/localize-app-and-api). _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs in BlazorExample.Api._
 
 ## Create the GetLanguage and SetLanguage Api actions
 
