@@ -1,7 +1,6 @@
-# Forestbrook.net Knowledge Base
+# Knowledge Base
 
-
-# Create the GetLanguage and SetLanguage Api actions
+## Create the GetLanguage and SetLanguage Api actions
 
 1. In the BlazorExample.Common project, add a **LanguageResources** class in the **Models** folder:
    ```cs
