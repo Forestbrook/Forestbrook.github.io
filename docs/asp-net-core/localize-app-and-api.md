@@ -1,5 +1,5 @@
 ---
-title: Localize WebApplication and Api
+title: Localize WebApp and Api
 parent: ASP.NET Core
 has_children: false
 nav_order: 1
@@ -7,7 +7,7 @@ nav_order: 1
 
 ## Localization of a MVC WebApplication and an Api
 
-See also: [Globalization and localization in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization)
+See also: [Globalization and localization in ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/localization){:target="_blank"}
 
 **The example is based on an ASP.NET Core 3 WebApplication (MVC) project.**
 
