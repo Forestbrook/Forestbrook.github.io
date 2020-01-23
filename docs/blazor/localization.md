@@ -29,9 +29,13 @@ I found several solutions on the web with workarounds for this (see [References]
 
 ## Create the project
 
-1. Create the initial BlazorExample solution as described in my reference blog [Create a new Blazor WebAssembly project with an ASP.NET Core Api](create-project).
+1. Create the initial BlazorExample solution as described in the knowledgebase article [Create Blazor WebAssembly project with an ASP.NET Core Api](create-project).
 
-1. Add a resource library project and edit Startup.cs (in BlazorExample.Api) as described in [Localization of a MVC WebApplication and an Api](/docs/asp-net-core/localize-app-and-api). _If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs in BlazorExample.Api._
+1. Add a resource library project **BlazorExample.ResourceLibrary**. See description [Create a resource library project](/docs/asp-net-core/localize-app-and-api#create-a-resource-library-project). _Skip this step if you want to use a database or other source of translations instead of .resx files._
+
+1. Edit Startup.cs in **BlazorExample.Api** as described in [Startup.cs configuration in your Web and/or Api projects](/docs/asp-net-core/localize-app-and-api#startupcs-configuration-in-your-web-andor-api-projects).
+You can skip `AddDataAnnotationsLocalization` and `AddViewLocalization`.
+_If you want to use a database or other source of translations instead of .resx files, make sure to add a service to load the translations in your Startup.cs._
 
 ## Create the GetLanguage and SetLanguage Api actions
 

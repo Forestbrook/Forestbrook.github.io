@@ -7,7 +7,7 @@ nav_order: 1
 
 _Last update: January 23, 2020_
 
-## Create a new Blazor WebAssembly project with an ASP.NET Core Api
+## Create Blazor WebAssembly project with an ASP.NET Core Api
 
 You can host a Blazor WebAssembly App as a static website, e.g. in [Azure Storage](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website){:target="_blank"}, but because we use an ASP.NET Core Api, I prefer to use the Api project for hosting. Mind that this is **NOT** the same as a Blazor Server App!
 
