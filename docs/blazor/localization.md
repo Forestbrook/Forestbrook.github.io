@@ -9,6 +9,7 @@ _Last update: January 23, 2020_<br/>
 Source code in Git: [Blazor Localization Example](https://github.com/Forestbrook/BlazorLocalizationExample){:target="_blank"}
 
 # Blazor Localization
+{: .no_toc }
 
 This solution:
 * Is intended for [Blazor WebAssembly](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models#blazor-webassembly){:target="_blank"}. 
@@ -18,6 +19,12 @@ This solution:
 * When the language is changed, pages with translations are automatically updated.
 * Implements a `<SelectLanguage />` Razor component with a drop-down list to select the language.
 * The selected language code is stored in an ASP.NET Culture Cookie, but if you prefer you can also store the selected language code in the browsers local storage and use a `ui-culture` query parameter or an Accept-Language header in the Api calls.
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ## Introduction
 
