@@ -14,7 +14,7 @@ Source code in Git: [Blazor Localization Example](https://github.com/Forestbrook
 This solution:
 * Is intended for [Blazor WebAssembly](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models#blazor-webassembly){:target="_blank"}. 
 * Reads the translations from your Api when the Blazor app is started and when the language is changed.
-* Can be used with translations in **.resx files**, in a **translations database** or with any **other source of translations**.
+* Can be used with translations in **.resx files**, in a **translations database** or with **any other source of translations**.
 * Using translations on a page is just as easy as inserting **`@Translation["Welcome"]`**.
 * When the language is changed, pages with translations are automatically updated.
 * Implements a `<SelectLanguage />` Razor component with a drop-down list to select the language.
