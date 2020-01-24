@@ -22,4 +22,7 @@ During my study I had to do some programming (C and eh… Cobol) and I started to 
 I could take Software Engineering as an optional course at the department of Computer Science
 and I decided to specialize in Software Development after my study.
 
-
+I started with Mobile Development in 1998, when cellphones were more like bricks.
+Actually the first device I was programming had the nickname “the axe”, which was a mobile terminal with a matrix (!) printer included.
+It was used by cash transportation companies in several countries to keep track of all the details, 
+print collect/delivery receipts and transfer the data to the back-end system. All that I had to cram into a Z80 processor with 16kB memory…
