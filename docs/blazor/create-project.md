@@ -5,7 +5,7 @@ has_children: false
 nav_order: 1
 ---
 
-_Last update: January 23, 2020_
+_Last update: Februari 3, 2020_
 
 ## Create Blazor WebAssembly project with an ASP.NET Core Api
 
@@ -18,7 +18,7 @@ You can host a Blazor WebAssembly App as a static website, e.g. in [Azure Storag
 * When you have the latest version of Visual Studio installed and up-to-date, the required .NET Core 3.1 (or later) SDK should be already present. But because Blazor WebAssembly is in preview, you must install the template for the Blazor WebAssembly App (_you might even need to reinstall it after a Visual Studio update_). Run in a command prompt:
 
    ```
-   dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.1.0-preview4.19579.2
+   dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.2.0-preview1.20073.1
    ```
 
 ## Create the solution

@@ -5,7 +5,7 @@ has_children: false
 nav_order: 2
 ---
 
-_Last update: January 23, 2020_<br/>
+_Last update: Februari 3, 2020_<br/>
 Source code in Git: [Blazor Localization Example](https://github.com/Forestbrook/BlazorLocalizationExample){:target="_blank"}
 
 # Blazor Localization
@@ -466,18 +466,23 @@ We need some simple services and components at the client side to load and use t
 
 ## Select and use the languages in the BlazorExample.WebApp
 
-1. Edit **Startup.cs**:
+1. Edit **Program.cs**:
    ```cs
     using BlazorExample.Abstractions;
     using BlazorExample.Client.Localization;
     ...
-    public void ConfigureServices(IServiceCollection services)
+    public static async Task Main(string[] args)
     {
-        services.AddSingleton<ILanguageLoader, LanguageLoader>();
-        services.AddSingleton<TranslationService>();
-        services.AddSingleton<ITranslationProvider>(sp => sp.GetRequiredService<TranslationService>());
-        services.AddSingleton<ITranslationService>(sp => sp.GetRequiredService<TranslationService>());
-    }
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+        // Localization:
+        builder.Services.AddSingleton<ILanguageLoader, LanguageLoader>();
+        builder.Services.AddSingleton<TranslationService>();
+        builder.Services.AddSingleton<ITranslationProvider>(sp => sp.GetRequiredService<TranslationService>());
+        builder.Services.AddSingleton<ITranslationService>(sp => sp.GetRequiredService<TranslationService>());
+
+        builder.RootComponents.Add<App>("app");
+        ...
    ```
 1. In **_Imports.razor** add:
    ```cs
