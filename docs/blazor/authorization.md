@@ -67,6 +67,7 @@ You can implement your own authorization in your Api or use a 3rd party solution
         }
     }
     ```
+
 ## Prepare your WebApp
 
 In the **BlazorExample.WebApp** project:
