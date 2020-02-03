@@ -17,7 +17,7 @@ My specializations:
 
 - **Azure** and **Azure DevOps**.
 - **ASP.NET Core 3**
-- Very enthousiastic with **Blazor WebAssembly**.
+- Very enthusiastic with **Blazor WebAssembly**.
 - Almost 10 years of experience in creating native iOS and Android Apps with **Xamarin and Xamarin Forms** in C# .NET.
 - Over 20 years of **Mobile software development** experience.
 
@@ -35,16 +35,16 @@ After High School I started to study Forestry at Wageningen University. Soon I f
 
 During my study I had to do some programming (C and eh... Cobol) and I started to like it. I could take Software Engineering as an optional course at the department of Computer Science and I decided to specialize in Software Development after my study.
 
-I started with Mobile Development in 1998, when cellphones were more like bricks. Actually the first device I was programming had the nickname _the axe_, which was a mobile terminal with a matrix (!) printer included. It was used by cash transportation companies in several countries to keep track of all the details, print collect/delivery receipts and transfer the data to the back-end system. All that I had to cram into a Z80 processor with 16kB memory...
+I started with Mobile Development in 1998, when cellphones were more like bricks. Actually, the first device I was programming had the nickname _the axe_, which was a mobile terminal with a matrix (!) printer included. It was used by cash transportation companies in several countries to keep track of all the details, print collect/delivery receipts and transfer the data to the back-end system. All that I had to cram into a Z80 processor with 16 KB memory...
 
 ## Hire me
 
-You can hire me just to help you to get started, to help with a complex part of a solution or for a project were you need a specialist in my area. I'm well prepared to do my work remote, but if you are located in (on close to) Amsterdam, The Netherlands, I can help you on-site if you want to. I'm committed to a long-term relationship with my customers, even when you only need me occasianally. I can:
+You can hire me just to help you to get started, to help with a complex part of a solution or for a project where you need a specialist in my area. I'm well prepared to do my work remote, but if you are located in (or close to) Amsterdam, The Netherlands, I can help you on-site if you want to. I'm committed to a long-term relationship with my customers, even when you only need me occasionally. I can:
 
+- Help you to migrate your .NET solutions to Microsoft Azure.
 - Help you upgrade to ASP.NET Core 3.
 - Help you getting started with Blazor.
-- Help you getting started with Xamarin.
-- Help you to smooth out a stalled Xamarin project.
+- Help you getting started with Xamarin or to smooth out a stalled Xamarin project.
 - Help to build Xamarin/Blazor/Razor components.
 - Help you when you need a specialist in my area for a shorter or longer period.
 
