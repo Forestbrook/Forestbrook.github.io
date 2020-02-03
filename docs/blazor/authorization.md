@@ -13,10 +13,10 @@ Source code in Git: [Blazor Prepare for Authorization Example](https://github.co
 
 This solution:
 * Is intended for [Blazor WebAssembly](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models#blazor-webassembly){:target="_blank"}. 
-* * Shows how to prepare your Blazor WebAssembly client for authentication and authorization.
+* Shows how to prepare your Blazor WebAssembly client for authentication and authorization.
 * Prepares your client to work with a back end with a 3rd party authorization solution like **Azure AD B2C** or any other authorization solution (including your own).
 * Includes an example of a **ClientAuthorizationService** and a **SignIn component**.
-* Shows how your back end Api can inform you client about the authorization of the user.
+* Shows how your back end Api can inform your client about the authorization of the user.
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -168,8 +168,8 @@ In the **BlazorExample.WebApp** project:
         builder.Services.AddScoped<ClientAuthorizationService>(CreateAuthorizationService);
         builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<ClientAuthorizationService>());
         builder.Services.AddOptions();
-
    ...
+
     private static ClientAuthorizationService CreateAuthorizationService(IServiceProvider serviceProvider)
     {
         var httpClient = serviceProvider.GetRequiredService<HttpClient>();
