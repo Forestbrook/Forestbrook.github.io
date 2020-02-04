@@ -113,40 +113,41 @@ See also: [Use multiple environments in ASP.NET Core](https://docs.microsoft.com
 - Microsoft.Extensions.Configuration.AzureKeyVault
 
 2. In **appsettings.json** add:
-```json
-    "KeyVaultName": "--your-key-vault-name--",
-```
+   ```json
+   "KeyVaultName": "--your-key-vault-name--",
+   ```
+
 3. In **Program.cs**:
-```cs
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
-...
+   ```cs
+   using Microsoft.Azure.KeyVault;
+   using Microsoft.Azure.Services.AppAuthentication;
+   using Microsoft.Extensions.Configuration;
+   using Microsoft.Extensions.Configuration.AzureKeyVault;
+   ...
 
-public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-    WebHost.CreateDefaultBuilder(args)
-        .ConfigureAppConfiguration(AddKeyVaultConfigurationProvider)
-        .UseStartup<Startup>();
+   public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+       WebHost.CreateDefaultBuilder(args)
+           .ConfigureAppConfiguration(AddKeyVaultConfigurationProvider)
+           .UseStartup<Startup>();
 
-private static void AddKeyVaultConfigurationProvider(WebHostBuilderContext context, IConfigurationBuilder config)
-{
-    // Key Vault not available in Development environment:
-    if (context.HostingEnvironment.IsDevelopment())
-        return;
+   private static void AddKeyVaultConfigurationProvider(WebHostBuilderContext context, IConfigurationBuilder config)
+   {
+       // Key Vault not available in Development environment:
+       if (context.HostingEnvironment.IsDevelopment())
+           return;
 
-    var builtConfig = config.Build();
-    var azureServiceTokenProvider = new AzureServiceTokenProvider();
-    var keyVaultClient = new KeyVaultClient(
-        new KeyVaultClient.AuthenticationCallback(
-            azureServiceTokenProvider.KeyVaultTokenCallback));
+       var builtConfig = config.Build();
+       var azureServiceTokenProvider = new AzureServiceTokenProvider();
+       var keyVaultClient = new KeyVaultClient(
+           new KeyVaultClient.AuthenticationCallback(
+               azureServiceTokenProvider.KeyVaultTokenCallback));
 
-    config.AddAzureKeyVault(
-        $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
-        keyVaultClient,
-        new DefaultKeyVaultSecretManager());
-}
-```
+       config.AddAzureKeyVault(
+           $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/",
+           keyVaultClient,
+           new DefaultKeyVaultSecretManager());
+   }
+   ```
 
 ## Add Entity Framework
 
@@ -161,7 +162,6 @@ private static void AddKeyVaultConfigurationProvider(WebHostBuilderContext conte
 - Value: `Data Source=yourSqlServerName.database.windows.net;Initial Catalog=DatabaseName;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False`
 - Type: **SQLAzure**
 
-
 ### DataContext and Models
 
 - Create a .NET Core class library AppName.**Models**.
@@ -172,22 +172,22 @@ private static void AddKeyVaultConfigurationProvider(WebHostBuilderContext conte
 ### Register DbContext in Startup.cs
 
 - In `ConfigureServices()` add the code for the database connection and add the DbContext:
-```cs
-    // Get the connection string from the environment (dev: see appsettings.Development.json)
-    var builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("AppDb"));
+  ```cs
+      // Get the connection string from the environment (dev: see appsettings.Development.json)
+      var builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("AppDb"));
 
-    // Get the userID and password from the environment:
-    // (prod: keyvault; dev: secrets.json -- right-click project and choose 'Manage User Secrets')
-    var dbCredentials = Configuration.GetSection("DbCredentials");
-    builder.UserID = dbCredentials["UserId"];
-    builder.Password = dbCredentials["Password"];
+      // Get the userID and password from the environment:
+      // (prod: keyvault; dev: secrets.json -- right-click project and choose 'Manage User Secrets')
+      var dbCredentials = Configuration.GetSection("DbCredentials");
+      builder.UserID = dbCredentials["UserId"];
+      builder.Password = dbCredentials["Password"];
 
-    // Registers YourContext as a scoped service.
-    // Scoped lifetime => YourContext created once per request:
-    // Setting for EnableSqlParameterLogging: prod: turn on/off in environment; dev: see appsettings.Development.json
-    services.AddDbContext<YourContext>(options => options.UseSqlServer(builder.ConnectionString)
-        .EnableSensitiveDataLogging(Configuration.GetValue<bool>("Logging:EnableSqlParameterLogging")));
-```
+      // Registers YourContext as a scoped service.
+      // Scoped lifetime => YourContext created once per request:
+      // Setting for EnableSqlParameterLogging: prod: turn on/off in environment; dev: see appsettings.Development.json
+      services.AddDbContext<YourContext>(options => options.UseSqlServer(builder.ConnectionString)
+          .EnableSensitiveDataLogging(Configuration.GetValue<bool>("Logging:EnableSqlParameterLogging")));
+  ```
 
 ### Create a migration
 
