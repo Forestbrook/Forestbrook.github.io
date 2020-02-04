@@ -29,7 +29,7 @@ My specializations:
 
 ## A bit of history
 
-I live in Amsterdam, (Netherlands) with my wife and two sons (8 and 2). I was born on a small ecological farm [on the bottom of a lake](https://en.wikipedia.org/wiki/Haarlemmermeer). As an _eenvoudige boerenzoon_ I like to keep code simple!
+I live in Amsterdam, (Netherlands) with my wife and two sons (8 and 2). I was born on a small ecological farm [on the bottom of a lake](https://en.wikipedia.org/wiki/Haarlemmermeer){:target="_blank"}. As an _eenvoudige boerenzoon_ I like to keep code simple!
 
 After High School I started to study Forestry at Wageningen University. Soon I found out that Forestry was not exactly my cup of tea. I switched to Business Economics and managed to get a Masters degree (drs.) at the VU University Amsterdam.
 
@@ -49,4 +49,4 @@ You can hire me just to help you to get started, to help with a complex part of 
 - Help you when you need a specialist in my area for a shorter or longer period.
 
 Drop me an email at Marcel.Wolterbeek@forestcreek.nl.
-_I don't answer on emails from recruiters._
+_I don't answer emails from recruiters._
