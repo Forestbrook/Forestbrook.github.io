@@ -14,7 +14,7 @@ Involved resources:
 
 * Azure App Service Plan and App Service
 * Azure Key Vault
-* Azure SQL Server and SQL database
+* Azure SQL Server and SQL database accessed thru the Entity Framework
 * Blob Storage with an Azure Storage Account
 * Authentication and Authorization (separate article, comming soon...)
 
@@ -124,7 +124,6 @@ See also: [Use multiple environments in ASP.NET Core](https://docs.microsoft.com
    using Microsoft.Extensions.Configuration;
    using Microsoft.Extensions.Configuration.AzureKeyVault;
    ...
-
    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
        WebHost.CreateDefaultBuilder(args)
            .ConfigureAppConfiguration(AddKeyVaultConfigurationProvider)
