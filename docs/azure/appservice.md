@@ -78,7 +78,7 @@ After creation:
 - Select your Key Vault in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Key vaults**)
 - Select the **Access policies** section and click **+ Add Access Policy**
 - **Secret permissions**: Get, List
-- Select principal: Enter the name of your App Service. You can also use the Object ID from the Identity section of your AppService. The name of a [Deployment slot](){:target="_blank"} of your App Service is `yourAppServiceName/slots/yourSlotName`.
+- Select principal: Enter the name of your App Service. You can also use the Object ID from the Identity section of your AppService. The name of a [Deployment slot](pipelines#add-a-deployment-slot){:target="_blank"} of your App Service is `yourAppServiceName/slots/yourSlotName`.
 - Save with **Add** and _don't forget to_ click **Save** (upper left) to commit the changes.
 
 ## Where to store configuration settings for the App Service

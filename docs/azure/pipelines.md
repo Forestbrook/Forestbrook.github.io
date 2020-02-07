@@ -101,6 +101,11 @@ steps:
     package: $(System.ArtifactsDirectory)/**/$(packageName)
     deploymentMethod: auto
 ```
+
+Commit the created azure-pipelines.yml file and sync with your Azure DevOps Git repository.
+
+DevOps Pipelines will recognize the file, add it as a pipeline and trigger the build the next time you sync (or merge a pull request) with your repository.
+
 * See: [YAML predefined variables in Azure pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml){:target="_blank"}
 * See: [Microsoft-hosted agent pools (like **windows-latest**)](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops){:target="_blank"}
 * See: [YAML for DotNetCoreCLI@2 task](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops){:target="_blank"}
