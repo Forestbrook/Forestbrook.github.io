@@ -10,3 +10,6 @@ footer_content: "Copyright &copy; 2020 Marcel Wolterbeek, Amsterdam, The Netherl
 aux_links:
   "Forestbrook repositories on GitHub":
     - "//github.com/Forestbrook?tab=repositories"
+
+# Google Analytics Tracking
+# ga_tracking: UA-5555555-55
