@@ -12,7 +12,7 @@ When you check-in the code (or merge a pull request) of your ASP.NET WebApp or A
 
 Azure Pipelines are a great service to do this. Combined with **Deployment slots** you can even swap the running staging site with your production site to have the new version instantly on-line. And when something goes wrong, just swap back to the old production site (well... on condition that you didn't do a non-backward-compatible migration of your database or something like that).
 
-There is an awfull lot of documentation about Azure Pipelines, because it can be used for many different techniques in many different ways, so it's easy to get lost when you start. Also, the tools to help you with the setup work fine with a simple example solution, but when your solution is a little more complicated they might fail. So I will make these presumption (and add some links to help you find your way when your solution is different):
+There is an awfully lot of documentation about Azure Pipelines, because it can be used for many different techniques in many different ways, so it's easy to get lost when you start. Also, the tools to help you with the setup work fine with a simple example solution, but when your solution is a little more complicated, they might fail. I will make these presumption (and add some links to help you find your way when your solution is different):
 
 * A solution with an ASP.NET Core WebApp and/or Api and one or more .NET Core or .NET Standard class libraries.
 * NuGet packages with their PackageReferences in the .csproj files (not in package.json).
@@ -50,7 +50,7 @@ To deploy your app, your Azure DevOps Pipeline must have access to your Azure Ap
 - Open the **Service connections** page.
 - Choose **+ New service connection** (or Create service connection) and select **Azure Resource Manager**.
 - Select **Service Principal Authentication** (default).
-- Connection name: You can, for instace, use the name of the resource group of your App Service or the name of your Azure subscription.
+- Connection name: You can, for instance, use the name of the resource group of your App Service or the name of your Azure subscription.
 - Scope level: Subscription (default).
 - Subscription: Select your Azure subscription.
 - Resource Group: Select the Resource group of your App Service or leave blank for full subscription access.

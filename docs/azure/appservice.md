@@ -9,14 +9,14 @@ nav_order: 1
 {: .no_toc }
 
 A professional Azure ASP.NET Core WebApi or WebApp requires several Azure resources.
-This article is intented to keep track of the setup and configuration of these resources and how they are integrated in the application.
+This article is intended to keep track of the setup and configuration of these resources and how they are integrated in the application.
 Involved resources:
 
 * Azure App Service Plan and App Service
 * Azure Key Vault
 * Azure SQL Server and SQL database accessed thru the Entity Framework
 * Blob Storage with an Azure Storage Account
-* Authentication and Authorization (separate article, comming soon...)
+* Authentication and Authorization (separate article, coming soon...)
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -55,7 +55,7 @@ Involved resources:
 
 ### Create a (Blob) Storage Account
 - Create a Storage Account in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Storage accounts**)
-- Make sure to select the correct **Subscription**, **Resource group** and **Location**. Set a **Storage account name** (lowercese only), **Account kind** (StorageV2), **Performance** (Standard), **Replication** _(Locally-redundant storage (LRS))_ and **Access tier (default)** (Hot).
+- Make sure to select the correct **Subscription**, **Resource group** and **Location**. Set a **Storage account name** (lowercase only), **Account kind** (StorageV2), **Performance** (Standard), **Replication** _(Locally-redundant storage (LRS))_ and **Access tier (default)** (Hot).
 - Select **Review + create**, verify the selected settings and select **Create**.
 - Wait until **Your deployment is complete** is shown, then select **Go to resource**.
 - In the Storage account left menu select **Access keys** to get the key(s) and connection string(s) and store them in a safe place (Key Vault).
