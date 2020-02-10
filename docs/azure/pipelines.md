@@ -75,25 +75,28 @@ variables:
   azureServiceConnection: 'connectionYouCreated'
   azureAppServiceName: 'yourAppService'
   deployToSlot: 'yourSlotName'
-  packageName: 'WebApp.zip' # Use the FOLDER name of the project (.csproj) to publish.
+  projectToDeploy: 'yourWebAppOrApiProject.csproj'
+  packageName: 'Api.zip' # Use the FOLDER name of the projectToDeploy.
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build All $(buildConfiguration)
   inputs:
     command: build
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: Zip $(projectToDeploy) to $(packageName)
   inputs:
     command: publish
-    publishWebProjects: True
+    publishWebProjects: False
+    projects: '**/$(projectToDeploy)'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
 - task: AzureWebApp@1
-  displayName: Azure Deploy to deployment slot
+  displayName: Deploy to $(deployToSlot) slot
   inputs:
     azureSubscription: '$(azureServiceConnection)'
     appName: '$(azureAppServiceName)'
