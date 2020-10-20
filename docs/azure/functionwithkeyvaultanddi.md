@@ -76,7 +76,7 @@ REMARKS:
 - Set your **Project name**, **Location** and **Solution name** and click **Create**
 - Select the Azure Functions version (V3) and the Function Type (Timer trigger). At **Storage account (AzureWebJobsStorage)** keep the value **Storage emulator**. Do NOT select the Storage Account you created above, because this will write the Storage key to the `local.settings.json` file. When the App is in production (running on Azure) it will read the Storage account connection string from the KeyVault.
 
-## Add FunctionsStartup class with the KeyVault as a configuration provider
+### Add FunctionsStartup class with the KeyVault as a configuration provider
 
 1. Add Nuget packages:
 - Azure.Extensions.AspNetCore.Configuration.Secrets
@@ -84,103 +84,114 @@ REMARKS:
 - Microsoft.Azure.Functions.Extensions
 
 2. Add an **appsettings.json** file:
-   ```json
-   {
-      "KeyVaultName": "--your-key-vault-name--"
-   }
-   ```
-- Select the file in Solution Explorer and at **Properties**, **Copy to Output Directory** select **Copy if newer**.
+```json
+{
+    "KeyVaultName": "--your-key-vault-name--"
+}
+```
+- Select the file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**.
 
-3. Add a **Startup.cs** class:
-   _Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
-   ```cs
-   using Azure.Identity;
-   using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-   using Microsoft.Extensions.Configuration;
-   using Microsoft.Extensions.DependencyInjection;
-   using System;
-   using System.IO;
+3. Add a **Startup.cs** class
+_Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
+```cs
+using Azure.Identity;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 
-   [assembly: FunctionsStartup(typeof(Forestbrook.FunctionWithKeyVaultAndDI.Startup))]
-   namespace Forestbrook.FunctionWithKeyVaultAndDI
-   {
-       public class Startup : FunctionsStartup
-       {
-           private IConfiguration _configuration;
+[assembly: FunctionsStartup(typeof(Forestbrook.FunctionWithKeyVaultAndDI.Startup))]
+namespace Forestbrook.FunctionWithKeyVaultAndDI
+{
+    public class Startup : FunctionsStartup
+    {
+        private IConfiguration _configuration;
 
-           public override void Configure(IFunctionsHostBuilder builder)
-           {
-               // Configure your services here.
-           }
+        public override void Configure(IFunctionsHostBuilder builder)
+        {
+            // Configure your services here.
+        }
 
-           public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
-           {
-               var context = builder.GetContext();
-               var configurationBuilder = builder.ConfigurationBuilder;
-               configurationBuilder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), true, false)
-                   .AddEnvironmentVariables();
+        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
+            var context = builder.GetContext();
+            var configurationBuilder = builder.ConfigurationBuilder;
+            configurationBuilder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), true, false)
+                .AddEnvironmentVariables();
 
-               // Add the Key Vault:
-               var builtConfig = configurationBuilder.Build();
-               var keyVaultUri = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
-               configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+            // Add the Key Vault:
+            var builtConfig = configurationBuilder.Build();
+            var keyVaultUri = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
+            configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 
-               _configuration = configurationBuilder.Build();
-           }
-       }
-   }
-   ```
-4. Add a service: **DemoService.cs**:
-   ```cs
-   public class DemoService
-   {
-       public DemoService(string userId, string testSecret)
-       {
-           UserId = userId;
-           TestSecret = testSecret;
-       }
+            _configuration = configurationBuilder.Build();
+        }
+    }
+}
+```
 
-       public string TestSecret { get; }
+### Add a service: DemoService.cs
 
-       public string UserId { get; }
-   }
-   ```
-- Configure DemoService in Startup: In the **Configure** method add this line:
-   ```cs
-   builder.Services.AddSingleton(s => new DemoService(_configuration["DbCredentials:UserId"], _configuration["TestSecret"]));
-   ```
-5. Change the **Function1** class:
+```cs
+public class DemoService
+{
+    public DemoService(string userId, string testSecret)
+    {
+        UserId = userId;
+        TestSecret = testSecret;
+    }
+
+    public string TestSecret { get; }
+
+    public string UserId { get; }
+}
+```
+
+Configure DemoService in Startup: In the **Configure** method add this line:
+
+```cs
+builder.Services.AddSingleton(s => new DemoService(_configuration["DbCredentials:UserId"], _configuration["TestSecret"]));
+```
+
+### Change the Function1 class: get rid of Static and add a Service
 - Remove Static
 - Add the **DemoService** which will be loaded by Dependancy Injection.
 - Mind that the **Run** function can be async Task if you need to call Async methods.
+
 ```cs
-    public class Function1
+public class Function1
+{
+    private readonly DemoService _demoService;
+
+    public Function1(DemoService demoService)
     {
-        private readonly DemoService _demoService;
+        _demoService = demoService ?? throw new ArgumentNullException(nameof(demoService));
+    }
 
-        public Function1(DemoService demoService)
-        {
-            _demoService = demoService ?? throw new ArgumentNullException(nameof(demoService));
-        }
-
-        [FunctionName("Function1")]
-        public void Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log)
-        {
-            log.LogInformation(
-                @$"-----------------------------------------------
+    [FunctionName("Function1")]
+    public void Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log)
+    {
+        log.LogInformation(
+            @$"-----------------------------------------------
 C# Timer trigger function executed at: {DateTime.Now}
 UserId: {_demoService.UserId}
 TestSecret: {_demoService.TestSecret}
 -----------------------------------------------");
-        }
     }
+}
 ```
-6. Local testing issues
+
+## Local testing issues
 
 TODO
 
-7. Run the Function App:
+## Run the Function App:
    ![Result.png](/assets/images/azure-function-result.png)
+
+## Publish to Azure
+
+TODO
 
 ## References
 
