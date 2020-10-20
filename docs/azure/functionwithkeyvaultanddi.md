@@ -92,7 +92,9 @@ REMARKS:
 - Select the file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**.
 
 3. Add a **Startup.cs** class
+
 _Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
+
 ```cs
 using Azure.Identity;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -157,7 +159,7 @@ builder.Services.AddSingleton(s => new DemoService(_configuration["DbCredentials
 ### Change the Function1 class: get rid of Static and add a Service
 - Remove Static
 - Add the **DemoService** which will be loaded by Dependancy Injection.
-- Mind that the **Run** function can be async Task if you need to call Async methods.
+- Mind that the **Run** function can be `async Task` if you need to call Async methods.
 
 ```cs
 public class Function1
@@ -196,4 +198,4 @@ TODO
 ## References
 
 * [Use dependency injection in .NET Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection){:target="_blank"}
-* [GitHub issue Roadmap for .NET 5 and Azure Functions V3](https://github.com/Azure/azure-functions-host/issues/6674){:target="_blank"}
+* [GitHub issue: Roadmap for .NET 5 and Azure Functions V3](https://github.com/Azure/azure-functions-host/issues/6674){:target="_blank"}
