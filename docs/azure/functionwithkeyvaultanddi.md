@@ -92,7 +92,7 @@ REMARKS:
     "KeyVaultName": "--your-key-vault-name--"
 }
 ```
-- Select the file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**.
+- Select the appsettings.json file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**.
 
 3. Add a **Startup.cs** class
 
@@ -126,8 +126,8 @@ namespace Forestbrook.FunctionWithKeyVaultAndDI
                 .AddEnvironmentVariables();
 
             // Add the Key Vault:
-            var builtConfig = configurationBuilder.Build();
-            var keyVaultUri = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
+            var configuration = configurationBuilder.Build();
+            var keyVaultUri = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
 
             _configuration = configurationBuilder.Build();
@@ -158,6 +158,8 @@ Configure DemoService in Startup: In the **Configure** method add this line:
 ```cs
 builder.Services.AddSingleton(s => new DemoService(_configuration["DbCredentials:UserId"], _configuration["TestSecret"]));
 ```
+
+See [Service lifetimes](https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection#service-lifetimes){:target="_blank"} to figure out when to use Singleton, Transient or Scoped.
 
 ### Change the Function1 class: get rid of Static and add a Service
 - Remove Static
@@ -214,9 +216,9 @@ To set the **environment variables** on your PC:
 * Click the **Advanced** tab
 * Click **Environment variables...**.
 
-Remember to **restart Visual Studio after setting the environment variables**
+Remember to **restart Visual Studio after setting the environment variables**.
 
-If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`
+If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`.
 
 Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
 
