@@ -58,6 +58,7 @@ REMARKS:
 - Select **Next: Monitoring >** and select or create new **Application Insight** for your App.
 - Select **Review + create**, verify the selected settings and select **Create**.
 - Wait until **Your deployment is complete** is shown, then select **Go to resource**.
+- Select **Configuration** in the left menu. Azure added the setting **AzureWebJobsStorage**. You can remove this setting, because your app will read the setting from the KeyVault. Don't forget to click the **Save** button after removing the setting.
 
 ### Enable access of your Function App to the KeyVault
 - Select **Identity** in the left menu of your Function App, turn on **Status** on the **System assigned** tab and press **Save** > **Yes**.
@@ -172,7 +173,7 @@ public class Function1
     }
 
     [FunctionName("Function1")]
-    public void Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log)
+    public void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
     {
         log.LogInformation(
             @$"-----------------------------------------------
@@ -184,11 +185,41 @@ TestSecret: {_demoService.TestSecret}
 }
 ```
 
-## Local testing issues
+## Local testing/debugging in Visual Studio
 
-TODO
+When you run the Function App from Visual Studio on your local computer for debugging, the Function App can magically connect to the KeyVault. This magic happens in the `DefaultAzureCredential()` which was connected to the KeyVault Secrets configuration provider added in Startup.
+
+See [Authenticating via Visual Studio](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticating-via-visual-studio){:target="_blank"}
+
+To make this work, your Microsoft Account must have at least _Get_ and _List_ access to the KeyVault.
+
+### Issues
+
+I have multiple accounts connected to Visual Studio and I had some issues getting this to work. I found the solution here: [DefaultAzureCredential fails when multiple accounts are available and defaulting to SharedTokenCacheCredential](https://github.com/Azure/azure-sdk-for-net/issues/8658#issuecomment-656223272){:target="_blank"}.
+- I had to set the environment variables **AZURE_USERNAME** and **AZURE_TENANT_ID**
+- I did not have to set the DefaultAzureCredentialOptions.
+
+Here is were you can find your Azure **tennant ID**:
+* Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
+* When necessary, switch to the Active Directory with the KeyVault (mostly the default directory).
+* Search for and select **Tenant properties**
+* Copy the **Tenant ID**.
+
+To set the **environment variables** on your PC:
+* In **File Explorer** right click **This PC**
+* Select **Properties**
+* Click **Change Settings**
+* Click the **Advanced** tab
+* Click **Environment variables...**.
+
+Remember to **restart Visual Studio after setting the environment variables**
+
+If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`
+
+Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
 
 ## Run the Function App:
+
    ![Result.png](/assets/images/azure-function-result.png)
 
 ## Publish to Azure
