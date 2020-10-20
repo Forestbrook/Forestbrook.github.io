@@ -197,7 +197,7 @@ To make this work, your Microsoft Account must have at least _Get_ and _List_ ac
 
 I have multiple accounts connected to Visual Studio and I had some issues getting this to work. I found the solution here: [DefaultAzureCredential fails when multiple accounts are available and defaulting to SharedTokenCacheCredential](https://github.com/Azure/azure-sdk-for-net/issues/8658#issuecomment-656223272){:target="_blank"}.
 - I had to set the environment variables **AZURE_USERNAME** and **AZURE_TENANT_ID**
-- I did not have to set the DefaultAzureCredentialOptions.
+- I did _**not**_ have to set the DefaultAzureCredentialOptions.
 
 Here is were you can find your Azure **tennant ID**:
 * Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
@@ -218,13 +218,19 @@ If your account is not configured correctly, you will get an `Azure.Identity.Aut
 
 Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
 
-## Run the Function App:
+### Run the Function App:
 
    ![Result.png](/assets/images/azure-function-result.png)
 
 ## Publish to Azure
 
-TODO
+- Go to your Function App in the [Azure Portal](https://portal.azure.com){:target="_blank"}
+- In the **Overview** area select **Get publish profile**. This will download the publish profile to your PC.
+- In Visual Studio right click your Function App Project and choose **Publish...*
+- Select **Import Profile**, browse to the downloaded profile and select **Finish**.
+- Click **Publish**. This will build the Release version of you App and publish it to your Azure Function App.
+- In the Publish view in Visual Studio you can click **View streaming logs** to see the logging of your running Azure Function App!
+
 
 ## References
 
