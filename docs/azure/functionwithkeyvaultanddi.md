@@ -13,14 +13,14 @@ Source code in Git: [Azure Function App Example](https://github.com/Forestbrook/
 
 The Visual Studio project template for an Azure Function App is very basic and the Microsoft documentation is not always clear and up-to-date.
 
-This article shows step-by-step how to create a .NET Core Azure Function App.
+This article shows step-by-step how to create a professional .NET Core Azure Function App.
 
 I will use the new Azure.Identity library, which makes is very easy to use the Azure KeyVault as a Configuration Provider.
 
 REMARKS: 
 
 * Azure Functions do not support .NET 5 yet. See [GitHub issue](https://github.com/Azure/azure-functions-host/issues/6674){:target="_blank"}.
-* If your Function App needs an Azure Storage Account, you can store the connection string for the storage credentials in the KeyVault as a secret named **AzureWebJobsStorage**. Unfortunately when you test local, the Function App does NOT read AzureWebJobsStorage from the configuration, but requires it to be stored in `local.settings.json`. To prevent storing keys on your local computer, you can set AzureWebJobsStorage to `"UseDevelopmentStorage=true"` in local.settings.json.
+* If your Function App needs an Azure Storage Account, you can store the connection string for the storage credentials in the KeyVault as a secret named **AzureWebJobsStorage** as described below. Unfortunately, when you test local, the Function App does NOT read AzureWebJobsStorage from the configuration/KeyVault, but requires it to be stored in `local.settings.json`. To prevent storing keys on your local computer, you can set AzureWebJobsStorage to `"UseDevelopmentStorage=true"` in local.settings.json.
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -36,14 +36,14 @@ REMARKS:
 - Create a Key Vault in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Key vaults**)
 - Make sure to select the correct **Subscription**, **Resource group**, **Region**, **Pricing tier** (Standard).
 
-### Create a (Blob) Storage Account
+### Create a Storage Account
 - Create a Storage Account in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Storage accounts**)
 - Make sure to select the correct **Subscription**, **Resource group** and **Location**. Set a **Storage account name** (lowercase only), **Account kind** (StorageV2), **Performance** (Standard), **Replication** _(Locally-redundant storage (LRS))_.
 - Select **Review + create**, verify the selected settings and select **Create**.
 - Wait until **Your deployment is complete** is shown, then select **Go to resource**.
 - In the Storage account left menu select **Access keys**. Copy the (key 1) **Connection string**.
 
-### Add secrets to the Key Vault
+### Add secrets (configuration values) to the Key Vault
 - Go back to the Key Vault you created above.
 - In the **Secrets** left menu select **+ Generate/Import**.
 - Set **Name** to **AzureWebJobsStorage** and in **Value** paste the Stoage Connection string.
@@ -68,17 +68,121 @@ REMARKS:
 - At **Select principal** click "None selected" and paste the Object ID you copied in the search area. Your Function App will appear. Select it and click the **Select** button at the bottom.
 - Click the **Add** button and _don't forget to click the **Save** button_. Your Function App can now read configuration values from the KeyVault.
 
+## Create the Function App Solution
 
+### Create a new Function App Solution in Visual Studio
+- In Visual Studio select **Create a new project** or **File** > **New** > **Project...**.
+- Select the **AzureFunctions** template and click **Next**.
+- Set your **Project name**, **Location** and **Solution name** and click **Create**
+- Select the Azure Functions version (V3) and the Function Type (Timer trigger). At **Storage account (AzureWebJobsStorage)** keep the value **Storage emulator**. Do NOT select the Storage Account you created above, because this will write the Storage key to the `local.settings.json` file. When the App is in production (running on Azure) it will read the Storage account connection string from the KeyVault.
 
+## Add FunctionsStartup class with the KeyVault as a configuration provider
 
+1. Add Nuget packages:
+- Azure.Extensions.AspNetCore.Configuration.Secrets
+- Azure.Identity
+- Microsoft.Azure.Functions.Extensions
 
+2. Add an **appsettings.json** file:
+   ```json
+   {
+      "KeyVaultName": "--your-key-vault-name--"
+   }
+   ```
+- Select the file in Solution Explorer and at **Properties**, **Copy to Output Directory** select **Copy if newer**.
 
+3. Add a **Startup.cs** class:
+   _Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
+   ```cs
+   using Azure.Identity;
+   using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+   using Microsoft.Extensions.Configuration;
+   using Microsoft.Extensions.DependencyInjection;
+   using System;
+   using System.IO;
 
+   [assembly: FunctionsStartup(typeof(Forestbrook.FunctionWithKeyVaultAndDI.Startup))]
+   namespace Forestbrook.FunctionWithKeyVaultAndDI
+   {
+       public class Startup : FunctionsStartup
+       {
+           private IConfiguration _configuration;
 
+           public override void Configure(IFunctionsHostBuilder builder)
+           {
+               // Configure your services here.
+           }
+
+           public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+           {
+               var context = builder.GetContext();
+               var configurationBuilder = builder.ConfigurationBuilder;
+               configurationBuilder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), true, false)
+                   .AddEnvironmentVariables();
+
+               // Add the Key Vault:
+               var builtConfig = configurationBuilder.Build();
+               var keyVaultUri = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
+               configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+
+               _configuration = configurationBuilder.Build();
+           }
+       }
+   }
+   ```
+4. Add a service: **DemoService.cs**:
+   ```cs
+   public class DemoService
+   {
+       public DemoService(string userId, string testSecret)
+       {
+           UserId = userId;
+           TestSecret = testSecret;
+       }
+
+       public string TestSecret { get; }
+
+       public string UserId { get; }
+   }
+   ```
+- Configure DemoService in Startup: In the **Configure** method add this line:
+   ```cs
+   builder.Services.AddSingleton(s => new DemoService(_configuration["DbCredentials:UserId"], _configuration["TestSecret"]));
+   ```
+5. Change the **Function1** class:
+- Remove Static
+- Add the **DemoService** which will be loaded by Dependancy Injection.
+- Mind that the **Run** function can be async Task if you need to call Async methods.
+```cs
+    public class Function1
+    {
+        private readonly DemoService _demoService;
+
+        public Function1(DemoService demoService)
+        {
+            _demoService = demoService ?? throw new ArgumentNullException(nameof(demoService));
+        }
+
+        [FunctionName("Function1")]
+        public void Run([TimerTrigger("0 */1 * * * *")]TimerInfo myTimer, ILogger log)
+        {
+            log.LogInformation(
+                @$"-----------------------------------------------
+C# Timer trigger function executed at: {DateTime.Now}
+UserId: {_demoService.UserId}
+TestSecret: {_demoService.TestSecret}
+-----------------------------------------------");
+        }
+    }
+```
+6. Local testing issues
+
+TODO
+
+7. Run the Function App:
+   ![Result.png](/assets/images/azure-function-result.png)
 
 ## References
 
 * [Use dependency injection in .NET Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection){:target="_blank"}
 * [GitHub issue Roadmap for .NET 5 and Azure Functions V3](https://github.com/Azure/azure-functions-host/issues/6674){:target="_blank"}
-
-
