@@ -11,11 +11,13 @@ nav_order: 3
 _Last update: October 20, 2020_<br/>
 Source code in Git: [Azure Function App Example](https://github.com/Forestbrook/FunctionWithKeyVaultAndDI){:target="_blank"}
 
-The Visual Studio project template for an Azure Function App is very basic and the Microsoft documentation is not always clear and up-to-date.
+Creating a basic Azure Function App is simple, but when you have to build a professional Function App it is not always easy to find the right instructions and documentation.
 
-This article shows step-by-step how to create a professional .NET Core Azure Function App.
+In this article I will show all tasks involved to create a professional .NET Core Azure Function App, compact and step-by-step.
 
-I will use the new Azure.Identity library, which makes is very easy to use the Azure KeyVault as a Configuration Provider.
+This article is also intended as a reference source.
+
+I will use the new Azure.Identity library, which makes it very easy to use the Azure KeyVault as a Configuration Provider.
 
 REMARKS: 
 
@@ -218,7 +220,7 @@ If your account is not configured correctly, you will get an `Azure.Identity.Aut
 
 Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
 
-### Run the Function App:
+### Run the Function App
 
    ![Result.png](/assets/images/azure-function-result.png)
 
@@ -226,7 +228,7 @@ Because you have to restart Visual Studio every time you change the environment 
 
 - Go to your Function App in the [Azure Portal](https://portal.azure.com){:target="_blank"}
 - In the **Overview** area select **Get publish profile**. This will download the publish profile to your PC.
-- In Visual Studio right click your Function App Project and choose **Publish...*
+- In Visual Studio right click your Function App Project and choose **Publish...**
 - Select **Import Profile**, browse to the downloaded profile and select **Finish**.
 - Click **Publish**. This will build the Release version of you App and publish it to your Azure Function App.
 - In the Publish view in Visual Studio you can click **View streaming logs** to see the logging of your running Azure Function App!
