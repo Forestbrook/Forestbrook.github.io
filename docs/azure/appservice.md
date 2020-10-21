@@ -107,7 +107,7 @@ See also: [Use multiple environments in ASP.NET Core](https://docs.microsoft.com
 - At the right options make sure **Configure for HTTPS** is selected.
 - Authentication: See Azure AD B2C article.
 
-## Add the KeyVault as a configuration provider
+### Add the KeyVault as a configuration provider
 
 1. Add Nuget packages:
 - Azure.Extensions.AspNetCore.Configuration.Secrets
@@ -154,6 +154,64 @@ See also: [Use multiple environments in ASP.NET Core](https://docs.microsoft.com
    webBuilder
        .ConfigureAppConfigurationWithKeyVault()
        .UseStartup<Startup>();
+   ```
+
+### Add a Storage Repository
+
+If you created a (Blob) Storage Account above, you can implement a Storage Repository. Example:
+   ```cs
+   public class BlobStorageRepository
+   {
+       public BlobStorageRepository(string storageConnectionString)
+       {
+           if (string.IsNullOrEmpty(storageConnectionString)) throw new ArgumentNullException(nameof(storageConnectionString));
+           // TODO: Implement your repository using the Nuget Package Azure.Storage.Blobs
+           //_blobServiceClient = new BlobServiceClient(storageConnectionString);
+       }
+   }
+   ```
+In **Startup.cs** in the `ConfigureServices` method add this line:
+   ```cs
+   services.AddScoped(s => new BlobStorageRepository(Configuration.GetValue<string>("StorageConnectionString")));
+   ```
+
+### Add a SQL Server Database Repository
+
+If you created a SQL Database above, you can implement a SQL Server Database Repository.
+
+1. Example repository: -- Skip this step if you want to use the Entity Framework (see below).
+   ```cs
+   public class SqlServerDatabaseRepository
+   {
+       public SqlServerDatabaseRepository(string connectionString)
+       {
+           if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString));
+           // TODO: Implement your repository
+       }
+   }
+   ```
+
+2. To enable local testing and debugging, add the database connection string which you added to your App Service Configuration above to **appsettings.Development.json**:
+   ```json
+  "ConnectionStrings": {
+    "AppDb": "Data Source=--your-SQL-Server-name--.database.windows.net;Initial Catalog=--your-database-name--;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+  },
+   ```
+
+3. In **Startup.cs** (or if you prefer in AspNetCoreHelper) add this helper method:
+   ```cs
+   private static string CreateSqlConnectionString(IConfiguration configuration)
+   {
+       var dbUserID = configuration.GetValue<string>("DbCredentials:UserId");
+       var dbPassword = configuration.GetValue<string>("DbCredentials:Password");
+       var builder = new SqlConnectionStringBuilder(configuration.GetConnectionString("AppDb")) { UserID = dbUserID, Password = dbPassword };
+       return builder.ConnectionString;
+   }
+   ```
+
+4. In **Startup.cs** in the `ConfigureServices` method add this line:
+   ```cs
+   services.AddScoped(s => new SqlServerDatabaseRepository(CreateSqlConnectionString(Configuration)));
    ```
 
 ## Add Entity Framework
