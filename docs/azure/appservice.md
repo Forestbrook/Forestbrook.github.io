@@ -158,7 +158,9 @@ See also: [Use multiple environments in ASP.NET Core](https://docs.microsoft.com
 
 ### Add a Storage Repository
 
-If you created a (Blob) Storage Account above, you can implement a Storage Repository. Example:
+If you created a (Blob) Storage Account above, you can implement a Storage Repository.
+
+1. Example repository:
    ```cs
    public class BlobStorageRepository
    {
@@ -170,7 +172,8 @@ If you created a (Blob) Storage Account above, you can implement a Storage Repos
        }
    }
    ```
-In **Startup.cs** in the `ConfigureServices` method add this line:
+
+2. In **Startup.cs** in the `ConfigureServices` method add this line:
    ```cs
    services.AddScoped(s => new BlobStorageRepository(Configuration.GetValue<string>("StorageConnectionString")));
    ```
@@ -194,7 +197,7 @@ If you created a SQL Database above, you can implement a SQL Server Database Rep
 2. To enable local testing and debugging, add the database connection string which you added to your App Service Configuration above to **appsettings.Development.json**:
    ```json
   "ConnectionStrings": {
-    "AppDb": "Data Source=--your-SQL-Server-name--.database.windows.net;Initial Catalog=--your-database-name--;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+      "AppDb": "Data Source=--your-SQL-Server-name--.database.windows.net;Initial Catalog=--your-database-name--;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
   },
    ```
 
@@ -216,41 +219,19 @@ If you created a SQL Database above, you can implement a SQL Server Database Rep
 
 ## Add Entity Framework
 
-### Connection string and database credentials:
-
-1. Add the development database credentials to secrets.json (right-click project and choose **Manage User Secrets**). Example: 
- `{ "DbCredentials:UserId": "SqlUser@your-sqlserver", "DbCredentials:Password": "yourPassword" }`
-1. Add the production database credentials to the **KeyVault**. Use -- instead of : as section separator.
-1. Add the development connection string to **appsettings.Development.json**: `"ConnectionStrings": { "AppDb": "Data Source=..." },`
-1. Add the production connection string in the **Configuration** section of the **App Service** ([Azure Portal](https://portal.azure.com){:target="_blank"}):
-- Name: **AppDb**
-- Value: `Data Source=yourSqlServerName.database.windows.net;Initial Catalog=DatabaseName;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False`
-- Type: **SQLAzure**
-
 ### DataContext and Models
 
-- Create a .NET Core class library AppName.**Models**.
+- Create a .NET Core class library --your-app-name--.**Models**.
 - Add the Models for the database tables.
-- Create a .NET Core class library AppName.**DataAccess**.
+- Create a .NET Core class library --your-app-name--.**DataAccess**.
 - In the Data folder Create the DbContext with the DbSets for the tables.
 
 ### Register DbContext in Startup.cs
 
 - In `ConfigureServices()` add the code for the database connection and add the DbContext:
   ```cs
-      // Get the connection string from the environment (dev: see appsettings.Development.json)
-      var builder = new SqlConnectionStringBuilder(Configuration.GetConnectionString("AppDb"));
-
-      // Get the userID and password from the environment:
-      // (prod: keyvault; dev: secrets.json -- right-click project and choose 'Manage User Secrets')
-      var dbCredentials = Configuration.GetSection("DbCredentials");
-      builder.UserID = dbCredentials["UserId"];
-      builder.Password = dbCredentials["Password"];
-
-      // Registers YourContext as a scoped service.
-      // Scoped lifetime => YourContext created once per request:
       // Setting for EnableSqlParameterLogging: prod: turn on/off in environment; dev: see appsettings.Development.json
-      services.AddDbContext<YourContext>(options => options.UseSqlServer(builder.ConnectionString)
+      services.AddDbContext<YourContext>(options => options.UseSqlServer(CreateSqlConnectionString(Configuration))
           .EnableSensitiveDataLogging(Configuration.GetValue<bool>("Logging:EnableSqlParameterLogging")));
   ```
 
@@ -258,10 +239,10 @@ If you created a SQL Database above, you can implement a SQL Server Database Rep
 
 When necesary, install EF Core 3.0 tools. See: [Announcing Entity Framework Core 3.0](https://devblogs.microsoft.com/dotnet/announcing-ef-core-3-0-and-ef-6-3-general-availability/){:target="_blank"}
 
-- Open **PowerShell** and CD to the **WebApi project folder**
+- Open **PowerShell** and CD to the **WebApp or WebApi project folder**
 - `dotnet build`
-- `dotnet ef migrations add InitialCreate --project ../DataAccess/AppName.DataAccess.csproj --context YourContext`
-- `dotnet ef database update --project ../DataAccess/AppName.DataAccess.csproj --context YourContext`
+- `dotnet ef migrations add InitialCreate --project ../DataAccess/--your-app-name--.DataAccess.csproj --context YourContext`
+- `dotnet ef database update --project ../DataAccess/--your-app-name--.DataAccess.csproj --context YourContext`
 
 ## Add Application Insights
 
