@@ -237,7 +237,7 @@ If you created a SQL Database above, you can implement a SQL Server Database Rep
 
 ### Create a migration
 
-When necesary, install EF Core 3.0 tools. See: [Announcing Entity Framework Core 3.0](https://devblogs.microsoft.com/dotnet/announcing-ef-core-3-0-and-ef-6-3-general-availability/){:target="_blank"}
+When necesary, install EF Core tools. See: [Entity Framework Core tools reference](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet){:target="_blank"}
 
 - Open **PowerShell** and CD to the **WebApp or WebApi project folder**
 - `dotnet build`
