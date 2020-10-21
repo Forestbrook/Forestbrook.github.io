@@ -70,7 +70,7 @@ After creation:
 - TLS/SSL settings: **HTTPS Only** and Minimum TLS Version: **1.2**
 - In the Overview section select **Get publish profile** and store in temp folder.
 - In the **Configuration** section under **Connection strings** add the connection string for your database (replace _--your-SQL-Server-name--_ and _--your-database-name--_ with the correct name):
-  - Name: **DatabaseNameDb**
+  - Name (used in this article): **AppDb**
   - Value: `Data Source=--your-SQL-Server-name--.database.windows.net;Initial Catalog=--your-database-name--;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False`
   - Type: **SQLServer**
 
@@ -119,35 +119,35 @@ See also: [Use multiple environments in ASP.NET Core](https://docs.microsoft.com
    ```
 
 3. Add extensions class **AspNetCoreHelper.cs**:
-```cs
-using Azure.Identity;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using System;
-
-namespace Forestbrook.WebApiWithKeyVault
-{
-    public static class AspNetCoreHelper
-    {
-        private const string DefaultKeyVaultNameConfigurationKey = "KeyVaultName";
-
-        /// <summary>
-        /// Make sure to add to your appsettings.json: "KeyVaultName": "your-key-vault-name"
-        /// </summary>
-        public static IWebHostBuilder ConfigureAppConfigurationWithKeyVault(this IWebHostBuilder builder, string keyVaultNameConfigurationKey = DefaultKeyVaultNameConfigurationKey)
-        {
-            return builder.ConfigureAppConfiguration(AddKeyVaultConfigurationProvider);
-
-            void AddKeyVaultConfigurationProvider(WebHostBuilderContext context, IConfigurationBuilder config)
-            {
-                var builtConfig = config.Build();
-                var keyVaultUri = $"https://{builtConfig[keyVaultNameConfigurationKey]}.vault.azure.net/";
-                config.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
-            }
-        }
-    }
-}
-```
+   ```cs
+   using Azure.Identity;
+   using Microsoft.AspNetCore.Hosting;
+   using Microsoft.Extensions.Configuration;
+   using System;
+   
+   namespace Forestbrook.WebApiWithKeyVault
+   {
+       public static class AspNetCoreHelper
+       {
+           private const string DefaultKeyVaultNameConfigurationKey = "KeyVaultName";
+   
+           /// <summary>
+           /// Make sure to add to your appsettings.json: "KeyVaultName": "your-key-vault-name"
+           /// </summary>
+           public static IWebHostBuilder ConfigureAppConfigurationWithKeyVault(this IWebHostBuilder builder, string keyVaultNameConfigurationKey = DefaultKeyVaultNameConfigurationKey)
+           {
+               return builder.ConfigureAppConfiguration(AddKeyVaultConfigurationProvider);
+   
+               void AddKeyVaultConfigurationProvider(WebHostBuilderContext context, IConfigurationBuilder config)
+               {
+                   var builtConfig = config.Build();
+                   var keyVaultUri = $"https://{builtConfig[keyVaultNameConfigurationKey]}.vault.azure.net/";
+                   config.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+               }
+           }
+       }
+   }
+   ```
 
 4. In **Program.cs** change `webBuilder.UseStartup<Startup>();` to:
    ```cs
