@@ -9,6 +9,8 @@ nav_order: 1
 {: .no_toc }
 
 _Last update: October 21, 2020_<br/>
+Source code in Git: [Azure WebApi and WebApp with KeyVault](https://github.com/Forestbrook/WebApiWithKeyVault){:target="_blank"}
+
 A professional Azure ASP.NET Core WebApi or WebApp requires several Azure resources.
 This article is intended to keep track of the setup and configuration of these resources and how they are integrated in the application.
 Involved resources:
@@ -252,3 +254,36 @@ See: [Application Insights for ASP.NET Core applications](https://docs.microsoft
 - In Startup.cs ConfigureServices() add:
   `services.AddApplicationInsightsTelemetry();`
 - If you connected your WebService to Application Insights, the required configuration settings are already present.
+
+## Local testing/debugging in Visual Studio
+
+When you run your App from Visual Studio on your local computer in IIS Express for debugging, the App can magically connect to the KeyVault. This magic happens in the `DefaultAzureCredential()` which was connected to the KeyVault Secrets configuration provider added in Startup.
+
+See [Authenticating via Visual Studio](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticating-via-visual-studio){:target="_blank"}
+
+To make this work, your Microsoft Account must have at least _Get_ and _List_ access to the KeyVault.
+
+### Issues
+
+I have multiple accounts connected to Visual Studio and I had some issues getting this to work. I found the solution here: [DefaultAzureCredential fails when multiple accounts are available and defaulting to SharedTokenCacheCredential](https://github.com/Azure/azure-sdk-for-net/issues/8658#issuecomment-656223272){:target="_blank"}.
+- I had to set the environment variables **AZURE_USERNAME** and **AZURE_TENANT_ID**
+- I did _**not**_ have to set the DefaultAzureCredentialOptions.
+
+Here is were you can find your Azure **tennant ID**:
+* Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
+* When necessary, switch to the Active Directory with the KeyVault (mostly the default directory).
+* Search for and select **Tenant properties**
+* Copy the **Tenant ID**.
+
+To set the **environment variables** on your PC:
+* In **File Explorer** right click **This PC**
+* Select **Properties**
+* Click **Change Settings**
+* Click the **Advanced** tab
+* Click **Environment variables...**.
+
+Remember to **restart Visual Studio after setting the environment variables**.
+
+If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`.
+
+Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
