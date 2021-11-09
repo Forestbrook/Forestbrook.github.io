@@ -5,13 +5,13 @@ has_children: false
 nav_order: 1
 ---
 
-## Configure and create an ASP.NET Core WebApi or WebApp in an Azure App Service
+## Configure and create an ASP.NET 5 WebApi or WebApp in an Azure App Service
 {: .no_toc }
 
-_Last update: October 21, 2020_<br/>
+_Last update: November 9, 2021_<br/>
 Source code in Git: [Azure WebApi and WebApp with KeyVault](https://github.com/Forestbrook/WebApiWithKeyVault){:target="_blank"}
 
-A professional Azure ASP.NET Core WebApi or WebApp requires several Azure resources.
+A professional Azure ASP.NET 5 WebApi or WebApp requires several Azure resources.
 This article is intended to keep track of the setup and configuration of these resources and how they are integrated in the application.
 Involved resources:
 
@@ -61,11 +61,11 @@ Involved resources:
 - Make sure to select the correct **Subscription**, **Resource group** and **Location**. Set a **Storage account name** (lowercase only), **Account kind** (StorageV2), **Performance** (Standard), **Replication** _(Locally-redundant storage (LRS))_.
 - Select **Review + create**, verify the selected settings and select **Create**.
 - Wait until **Your deployment is complete** is shown, then select **Go to resource**.
-- In the Storage account left menu select **Access keys**. Copy the (key 1) **Connection string** and store it in the KeyVault as **Secret**. Secret name (used in this article): **StorageConnectionString**. You can access it in your app later like `Configuration.GetValue<string>("StorageConnectionString")`.
+- In the Storage account left menu select **Access keys**. Copy the (key 1) **Connection string** and store it in the KeyVault as **Secret**. Secret name (used in this article): **StorageCredentials--ConnectionString**. You can access it in your app later like `Configuration.GetValue<string>("StorageCredentials:ConnectionString")`.
 
 ### Create the App Service (Web App) for the WebApi or WebApp
 - Create an **App Service** in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **App services**)
-- Make sure to select the correct **Subscription**, **Resource Group**, **Runtime stack** (.Net Core 3.0), **Operating System** (Windows), **Region** and **App Service Plan**.
+- Make sure to select the correct **Subscription**, **Resource Group**, **Runtime stack** (.NET 5), **Operating System** (Windows), **Region** and **App Service Plan**.
 - Monitoring: When needed, enable Application Insights and select the correct one (or create a new one). This will generate all **configuration settings** for Application Insights, but make sure you add `services.AddApplicationInsightsTelemetry();` in Startup.cs!
 
 After creation:
@@ -73,8 +73,14 @@ After creation:
 - In the Overview section select **Get publish profile** and store in temp folder.
 - In the **Configuration** section under **Connection strings** add the connection string for your database (replace _--your-SQL-Server-name--_ and _--your-database-name--_ with the correct name):
   - Name (used in this article): **AppDb**
-  - Value: `Data Source=--your-SQL-Server-name--.database.windows.net;Initial Catalog=--your-database-name--;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False`
+  - Value: `Data Source=--your-SQL-Server-name--.database.windows.net;Initial Catalog=--your-database-name--; Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False`
   - Type: **SQLServer**
+- In the **Configuration** section under **Application settings** add:
+  - Name: **ASPNETCORE_ENVIRONMENT**, Value: **Production** (you can replace that with Development for debugging)
+  - Optional Name: **WEBSITE_TIME_ZONE**, Value: your time zone (e.g. W. Europe Standard Time)
+  - Optional you might need for Azure AD-B2C (add only if you are sure you need this) Name: WEBSITE_LOAD_USER_PROFILE, Value: 1
+
+  ASPNETCORE_ENVIRONMENT
 
 ### Enable the WebApi/WebApp to use the KeyVault with its Managed Identity
 - In your App Service, in the **Identity** section, turn on **Status** in the **System assigned** tab and select Save. Wait until Save is ready, then copy the **Object ID**.
@@ -177,7 +183,7 @@ If you created a (Blob) Storage Account above, you can implement a Storage Repos
 
 2. In **Startup.cs** in the `ConfigureServices` method add this line:
    ```cs
-   services.AddScoped(s => new BlobStorageRepository(Configuration.GetValue<string>("StorageConnectionString")));
+   services.AddScoped(s => new BlobStorageRepository(Configuration.GetValue<string>("StorageCredentials:ConnectionString")));
    ```
 
 ### Add a SQL Server Database Repository
