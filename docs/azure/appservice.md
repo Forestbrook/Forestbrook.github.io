@@ -225,8 +225,7 @@ If you created a (Blob) Storage Account above, you can implement a Storage Repos
 
 If you created a SQL Database above, you can implement a SQL Server Database Repository.
 
-1. Add Nuget package:
-- System.Data.SqlClient
+1. Add Nuget package **System.Data.SqlClient**
 
 2. In the extensions class **AspNetCoreHelper.cs** add:
    ```cs
@@ -279,8 +278,7 @@ If you created a SQL Database above, you can implement a SQL Server Database Rep
 
 ### Register DbContext in Program.cs
 
-1. Add Nuget package:
-- Microsoft.EntityFrameworkCore.SqlServer
+1. Add Nuget package **Microsoft.EntityFrameworkCore.SqlServer**
 
 2. In the extensions class **AspNetCoreHelper.cs** add:
    ```cs
@@ -342,33 +340,38 @@ See: [Application Insights for ASP.NET Core applications](https://docs.microsoft
 
 ## Local testing/debugging in Visual Studio
 
-When you run your App from Visual Studio on your local computer in IIS Express for debugging, the App can magically connect to the KeyVault. This magic happens in the `DefaultAzureCredential()` which was connected to the KeyVault Secrets configuration provider added in Startup.
+When you run your App from Visual Studio on your local computer in IIS Express for debugging, the App can magically connect to the KeyVault. This magic happens in the `DefaultAzureCredential()` which was connected to the KeyVault Secrets configuration provider added in AspNetCoreHelper.
 
 See [Authenticating via Visual Studio](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticating-via-visual-studio){:target="_blank"}
 
-To make this work, your Microsoft Account must have at least _Get_ and _List_ access to the KeyVault.
+To make this work, your Microsoft Account must have at least _Get_ and _List_ access to the KeyVault!
 
 ### Issues
 
-I have multiple accounts connected to Visual Studio and I had some issues getting this to work. I found the solution here: [DefaultAzureCredential fails when multiple accounts are available and defaulting to SharedTokenCacheCredential](https://github.com/Azure/azure-sdk-for-net/issues/8658#issuecomment-656223272){:target="_blank"}.
-- I had to set the environment variables **AZURE_USERNAME** and **AZURE_TENANT_ID**
-- I did _**not**_ have to set the DefaultAzureCredentialOptions.
+1. You might have to tell Visual Studio your Azure tennant ID by setting the environment variable **AZURE_TENANT_ID**
+    Here is were you can find your Azure **tennant ID**:
+    * Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
+    * When necessary, switch to the Active Directory with the KeyVault.
+    * Search for and select **Tenant properties**
+    * Copy the **Tenant ID**.
 
-Here is were you can find your Azure **tennant ID**:
-* Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
-* When necessary, switch to the Active Directory with the KeyVault (mostly the default directory).
-* Search for and select **Tenant properties**
-* Copy the **Tenant ID**.
+    To set the **environment variables** on your PC:
+    * In **File Explorer** right click **This PC**
+    * Select **Properties**
+    * Click **Change Settings**
+    * Click the **Advanced** tab
+    * Click **Environment variables...**.
 
-To set the **environment variables** on your PC:
-* In **File Explorer** right click **This PC**
-* Select **Properties**
-* Click **Change Settings**
-* Click the **Advanced** tab
-* Click **Environment variables...**.
+    Remember to **restart Visual Studio after setting the environment variables**.
 
-Remember to **restart Visual Studio after setting the environment variables**.
+2. If you have solutions for more than one Azure tennants, it is quite annoying to change the AZURE_TENANT_ID environment variable. That is why I added the ConfigurationKey **KeyVaultTenantId**. You can store the KeyVaultTenantId=--your-tennant--id-- in UserSecrets (in Visual Studio right-click your WebApi-project and choose **Manage User Secrets**) or in appsettings.Development.json.
 
-If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`.
+3. If you have multiple Microsoft accounts connected to Visual Studio, you might have to tell Visual Studio which account to use:
+    * Select Tools > Options...
+    * Go to option **Azure Service Authentication** > **Account Selection**
+    * Choose an account.
+    * Alternatively, you can set the environment variable **AZURE_USERNAME**
 
-Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
+4. If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`.
+
+See also: [DefaultAzureCredential fails when multiple accounts are available and defaulting to SharedTokenCacheCredential](https://github.com/Azure/azure-sdk-for-net/issues/8658){:target="_blank"}.
