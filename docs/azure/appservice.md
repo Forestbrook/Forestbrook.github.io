@@ -37,7 +37,7 @@ Involved resources:
 
 ### Create a Key Vault
 - Use a single Key Vault for every app group (a group may consist of, for example: Api, WebApp, Mobile and tools).
-- I recommend to use different Key Vaults for Staging and Production.
+- I recommend to use different Key Vaults for Development/Staging and Production.
 - Create a Key Vault in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Key vaults**)
 - Make sure to select the correct **Subscription**, **Resource group**, **Region**, **Pricing tier** (Standard).
 

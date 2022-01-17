@@ -5,10 +5,10 @@ has_children: false
 nav_order: 3
 ---
 
-## Create Azure Function App with Dependency Injection and the Key Vault as Configuration Provider
+## Create .NET 6 Azure Function App with Dependency Injection and the Key Vault as Configuration Provider
 {: .no_toc }
 
-_Last update: October 20, 2020_<br/>
+_Last update: January 18, 2022_<br/>
 Source code in Git: [Azure Function App Example](https://github.com/Forestbrook/FunctionWithKeyVaultAndDI){:target="_blank"}
 
 Creating a basic Azure Function App is simple, but when you have to build a professional Function App it is not always easy to find the right instructions and documentation.
@@ -21,8 +21,7 @@ I will use the new Azure.Identity library, which makes it very easy to use the A
 
 REMARKS: 
 
-* Azure Functions do not support .NET 5 yet. See [GitHub issue](https://github.com/Azure/azure-functions-host/issues/6674){:target="_blank"}.
-* If your Function App needs an Azure Storage Account, you can store the connection string for the storage credentials in the KeyVault as a secret named **AzureWebJobsStorage** as described below. Unfortunately, when you test local, the Function App does NOT read AzureWebJobsStorage from the configuration/KeyVault, but requires it to be stored in `local.settings.json`. To prevent storing keys on your local computer, you can set AzureWebJobsStorage to `"UseDevelopmentStorage=true"` in local.settings.json.
+If your Function App needs an Azure Storage Account, you can store the connection string for the storage credentials in the KeyVault as a secret named **AzureWebJobsStorage** as described below. Unfortunately, when you test local, the Function App does NOT read AzureWebJobsStorage from the configuration/KeyVault, but requires it to be stored in `local.settings.json`. To prevent storing keys on your local computer, you can set AzureWebJobsStorage to `"UseDevelopmentStorage=true"` in local.settings.json.
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -34,30 +33,32 @@ REMARKS:
 
 ### Create a Key Vault
 - Use a single Key Vault for every app group (a group may consist of, for example: Function Apps, Api, WebApp, Mobile and tools).
-- I recommend to use different Key Vaults for Development/Testing and Production.
+- I recommend to use different Key Vaults for Development/Staging and Production.
 - Create a Key Vault in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Key vaults**)
 - Make sure to select the correct **Subscription**, **Resource group**, **Region**, **Pricing tier** (Standard).
 
-### Create a Storage Account
+### Create a (Blob) Storage Account
 - Create a Storage Account in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Storage accounts**)
-- Make sure to select the correct **Subscription**, **Resource group** and **Location**. Set a **Storage account name** (lowercase only), **Account kind** (StorageV2), **Performance** (Standard), **Replication** _(Locally-redundant storage (LRS))_.
+- Make sure to select the correct **Subscription**, **Resource group** and **Location**. Set a **Storage account name** (lowercase only), **Performance** (Standard), **Redundancy** _(LRS or GRS)_.
+- In the **Advanced** tab Check the **Security** settings.
+- In the **Data protection** tab check the **Recovery** and **Tracking** options.
 - Select **Review + create**, verify the selected settings and select **Create**.
 - Wait until **Your deployment is complete** is shown, then select **Go to resource**.
-- In the Storage account left menu select **Access keys**. Copy the (key 1) **Connection string**.
+- In the Storage account left menu select **Access keys**. Copy the (key 1) **Connection string** (the connection string includes the key).
 
 ### Add secrets (configuration values) to the Key Vault
 - Go back to the Key Vault you created above.
 - In the **Secrets** left menu select **+ Generate/Import**.
-- Set **Name** to **AzureWebJobsStorage** and in **Value** paste the Stoage Connection string.
+- Set **Name** to **AzureWebJobsStorage** and in **Value** paste the Storage Connection string.
 - For the [Function Example App](https://github.com/Forestbrook/FunctionWithKeyVaultAndDI){:target="_blank"} add two more secrets:
   - Name: **DbCredentials:UserId**, Value: **UserId read from the KeyVault**
   - Name: **TestSecret**, Value: **Test Secret stored in the KeyVault**
 
 ### Create a Function App
 - Create a Function App in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Function App**)
-- Make sure to select the correct values for **Subscription**, **Resource group**, **Publish** (Code), **Runtime stack** (.NET Core), Version (3.1) and Region.
-- Select **Next: Hosting >** and select the **Storage account** you created above, the **Operating System** (Windows), and the **Plan Type** (Consumption (Serverless)).
-- Select **Next: Monitoring >** and select or create new **Application Insight** for your App.
+- Make sure to select the correct values for **Subscription**, **Resource group**, **Publish** (Code), **Runtime stack** (.NET), Version (6) and Region.
+- In the **Hosting** tab select the **Storage account** you created above, the **Operating System**, and the **Plan Type** (Consumption (Serverless)).
+- In the **Monitoring** tab: When needed, enable Application Insights and select the correct one (or create a new one).
 - Select **Review + create**, verify the selected settings and select **Create**.
 - Wait until **Your deployment is complete** is shown, then select **Go to resource**.
 - Select **Configuration** in the left menu. Azure added the setting **AzureWebJobsStorage**. You can remove this setting, because your app will read the setting from the KeyVault. Don't forget to click the **Save** button after removing the setting.
