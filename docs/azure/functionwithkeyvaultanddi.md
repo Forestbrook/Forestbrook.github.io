@@ -349,23 +349,24 @@ To make this work, your Microsoft Account must have at least _Get_ and _List_ ac
 
 1. Unfortunately, when you test local, the Function App does NOT read AzureWebJobsStorage from the configuration/KeyVault, but requires it to be stored in `local.settings.json`. To prevent storing keys on your local computer, you can set AzureWebJobsStorage to `"UseDevelopmentStorage=true"` in local.settings.json.
 
-2. You might have to tell Visual Studio your Azure tennant ID by setting the environment variable **AZURE_TENANT_ID**
-    Here is were you can find your Azure **tennant ID**:
-    * Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
-    * When necessary, switch to the Active Directory with the KeyVault.
-    * Search for and select **Tenant properties**
-    * Copy the **Tenant ID**.
+2. You might have to tell Visual Studio your Azure tennant ID by setting the environment variable **AZURE_TENANT_ID**.
+   
+   Here is were you can find your Azure **tennant ID**:
+   * Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
+   * When necessary, switch to the Active Directory with the KeyVault.
+   * Search for and select **Tenant properties**
+   * Copy the **Tenant ID**.
 
-    To set the **environment variables** on your PC:
-    * In **File Explorer** right click **This PC**
-    * Select **Properties**
-    * Click **Change Settings**
-    * Click the **Advanced** tab
-    * Click **Environment variables...**.
+   To set the **environment variables** on your PC:
+   * In **File Explorer** right click **This PC**
+   * Select **Properties**
+   * Click **Change Settings**
+   * Click the **Advanced** tab
+   * Click **Environment variables...**.
 
-    Remember to **restart Visual Studio after setting the environment variables**.
+   Remember to **restart Visual Studio after setting the environment variables**.
 
-3. If you have solutions for more than one Azure tennants, it is quite annoying to change the AZURE_TENANT_ID environment variable. That is why I added the ConfigurationKey **KeyVaultTenantId**. You can store the KeyVaultTenantId=--your-tennant--id-- in UserSecrets (in Visual Studio right-click your WebApi-project and choose **Manage User Secrets**) or in appsettings.Development.json.
+3. If you have solutions for more than one Azure tennant, it is quite annoying to change the AZURE_TENANT_ID environment variable. That is why I added the ConfigurationKey **KeyVaultTenantId**. You can store the KeyVaultTenantId=--your-tennant--id-- in UserSecrets (in Visual Studio right-click your WebApi-project and choose **Manage User Secrets**) or in appsettings.Development.json.
 
 4. If you have multiple Microsoft accounts connected to Visual Studio, you might have to tell Visual Studio which account to use:
     * Select Tools > Options...
@@ -384,7 +385,7 @@ To make this work, your Microsoft Account must have at least _Get_ and _List_ ac
 - In Visual Studio right click your Function App Project and choose **Publish...**
 - Select target **Azure** and click **Next**.
 - Select Specific target **Azure Function App**
-- In the Publish window, make sure to select the right **Microsoft account** and **Subscription name** and select the Function App you created and select **Run from package file**. Click **Finish**.
+- In the Publish window, make sure to select the right **Microsoft account** and **Subscription name**, select the Function App you created and select **Run from package file**. Click **Finish**.
 - Click **Publish**. This will build the Release version of you App and publish it to your Azure Function App.
 
 ## References
