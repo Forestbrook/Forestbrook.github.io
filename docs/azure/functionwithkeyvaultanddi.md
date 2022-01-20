@@ -56,7 +56,7 @@ If your Function App needs an Azure Storage Account, you can store the connectio
 
 ### Create a Function App
 - Create a Function App in the [Azure Portal](https://portal.azure.com){:target="_blank"} (search for **Function App**)
-- Make sure to select the correct values for **Subscription**, **Resource group**, **Publish** (Code), **Runtime stack** (.NET), Version (6) and Region.
+- Make sure to select the correct values for **Subscription**, **Resource group**, **Publish** (Code), **Runtime stack** (.NET), **Version** (6) and **Region**.
 - In the **Hosting** tab select the **Storage account** you created above, the **Operating System**, and the **Plan Type** (Consumption (Serverless)).
 - In the **Monitoring** tab: When needed, enable Application Insights and select the correct one (or create a new one).
 - Select **Review + create**, verify the selected settings and select **Create**.
@@ -96,25 +96,25 @@ If your Function App needs an Azure Storage Account, you can store the connectio
     "KeyVaultName": "--your-key-vault-name--"
 }
 ```
-- Select the appsettings.json file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**.
+- Select the appsettings.json file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**. (Keep Build Action: None).
 
 3. Add a static class **ConfigurationKeys.cs**:
-```cs
-namespace Forestbrook.FunctionWithKeyVaultAndDI;
-
-public static class ConfigurationKeys
-{
-    /// <summary>
-    /// StorageConnectionString for Azure Function
-    /// </summary>
-    public const string AzureWebJobsStorage = "AzureWebJobsStorage";
-
-    public const string DatabaseUserId = "DbCredentials:UserId";
-    public const string KeyVaultName = "KeyVaultName";
-    public const string KeyVaultTenantId = "KeyVaultTenantId";
-    public const string StorageConnectionString = "StorageCredentials:ConnectionString";
-}
-```
+   ```cs
+   namespace Forestbrook.FunctionWithKeyVaultAndDI;
+   
+   public static class ConfigurationKeys
+   {
+       /// <summary>
+       /// StorageConnectionString for Azure Function
+       /// </summary>
+       public const string AzureWebJobsStorage = "AzureWebJobsStorage";
+   
+       public const string DatabaseUserId = "DbCredentials:UserId";
+       public const string KeyVaultName = "KeyVaultName";
+       public const string KeyVaultTenantId = "KeyVaultTenantId";
+       public const string StorageConnectionString = "StorageCredentials:ConnectionString";
+   }
+   ```
 
 4. Add the static helper class **FunctionHelper.cs**:
 ```cs
@@ -245,7 +245,7 @@ builder.Services.AddSingleton<DemoService>();
 
 See [Service lifetimes](https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection#service-lifetimes){:target="_blank"} to figure out when to use Singleton, Transient or Scoped.
 
-### Add a HttpTrigger Function with dependancy injection **IsAliveFunction.cs**
+### Add a HttpTrigger Function with dependancy injection: IsAliveFunction.cs
 
 - Remove the Function1 class
 - Mind that the **Run** function can be `async Task` if you need to call Async methods.
@@ -306,7 +306,7 @@ public class IsAliveFunction
 }
 ```
 
-### Add a TimerTrigger Function with dependancy injection **TimerTriggerFunction.cs**
+### Add a TimerTrigger Function with dependancy injection: TimerTriggerFunction.cs
 
 ```cs
 using Microsoft.Azure.WebJobs;
