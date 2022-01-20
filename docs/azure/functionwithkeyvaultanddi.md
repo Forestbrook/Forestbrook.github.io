@@ -117,100 +117,98 @@ If your Function App needs an Azure Storage Account, you can store the connectio
    ```
 
 4. Add the static helper class **FunctionHelper.cs**:
-```cs
-using Azure.Core;
-using Azure.Identity;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
-
-namespace Forestbrook.FunctionWithKeyVaultAndDI;
-
-public static class FunctionHelper
-{
-    public static IConfigurationBuilder AddAppSettingsJson(this IConfigurationBuilder builder, FunctionsHostBuilderContext context)
-    {
-        builder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), optional: true, reloadOnChange: false);
-        builder.AddJsonFile(Path.Combine(context.ApplicationRootPath, $"appsettings.{context.EnvironmentName}.json"), optional: true, reloadOnChange: false);
-        return builder;
-    }
-
-    public static IConfigurationBuilder AddAzureKeyVault(this IConfigurationBuilder builder)
-        => builder.AddAzureKeyVault(builder.Build());
-
-    /// <summary>
-    /// Make sure to add to your appsettings.json: "KeyVaultName": "your-key-vault-name"
-    /// </summary>
-    public static IConfigurationBuilder AddAzureKeyVault(this IConfigurationBuilder builder, IConfiguration configuration)
-    {
-        var keyVaultUri = configuration.CreateKeyVaultUri();
-        var keyVaultCredential = configuration.CreateKeyVaultCredential();
-        builder.AddAzureKeyVault(keyVaultUri, keyVaultCredential);
-        return builder;
-    }
-
-    private static TokenCredential CreateKeyVaultCredential(this IConfiguration configuration)
-    {
-        // WARNING: Make sure to give the App in the Azure Portal access to the KeyVault.
-        //          In the Identity tab: System Assigned part: turn Status On and copy the Object ID.
-        //          In the KeyVault: Access Policies > Add Access Policy > Secret Permissions Get, List and Select Principal: Object ID copied above.
-        // When running on Azure, you do NOT need to set the KeyVaultTenantId.
-        var keyVaultTenantId = configuration[ConfigurationKeys.KeyVaultTenantId];
-        if (string.IsNullOrEmpty(keyVaultTenantId))
-            return new DefaultAzureCredential();
-
-        // When debugging local from VisualStudio AND the TenantId differs from default AZURE_TENANT_ID (in Windows settings/environment variables),
-        // you can store KeyVaultTenantId= in appsettings or in UserSecrets and read it here from the configuration (as done above)
-        var options = new DefaultAzureCredentialOptions { VisualStudioTenantId = keyVaultTenantId };
-        return new DefaultAzureCredential(options);
-    }
-
-    private static Uri CreateKeyVaultUri(this IConfiguration configuration)
-    {
-        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
-        var keyVaultName = configuration[ConfigurationKeys.KeyVaultName];
-        if (string.IsNullOrEmpty(keyVaultName))
-            throw new InvalidOperationException($"Missing configuration setting {ConfigurationKeys.KeyVaultName}");
-
-        return new Uri($"https://{keyVaultName}.vault.azure.net/");
-    }
-}
-```
+   ```cs
+   using Azure.Core;
+   using Azure.Identity;
+   using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+   using Microsoft.Extensions.Configuration;
+   using System;
+   using System.IO;
+   
+   namespace Forestbrook.FunctionWithKeyVaultAndDI;
+   
+   public static class FunctionHelper
+   {
+       public static IConfigurationBuilder AddAppSettingsJson(this IConfigurationBuilder builder, FunctionsHostBuilderContext context)
+       {
+           builder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), optional: true, reloadOnChange: false);
+           builder.AddJsonFile(Path.Combine(context.ApplicationRootPath, $"appsettings.{context.EnvironmentName}.json"), optional: true, reloadOnChange: false);
+           return builder;
+       }
+   
+       public static IConfigurationBuilder AddAzureKeyVault(this IConfigurationBuilder builder)
+           => builder.AddAzureKeyVault(builder.Build());
+   
+       /// <summary>
+       /// Make sure to add to your appsettings.json: "KeyVaultName": "your-key-vault-name"
+       /// </summary>
+       public static IConfigurationBuilder AddAzureKeyVault(this IConfigurationBuilder builder, IConfiguration configuration)
+       {
+           var keyVaultUri = configuration.CreateKeyVaultUri();
+           var keyVaultCredential = configuration.CreateKeyVaultCredential();
+           builder.AddAzureKeyVault(keyVaultUri, keyVaultCredential);
+           return builder;
+       }
+   
+       private static TokenCredential CreateKeyVaultCredential(this IConfiguration configuration)
+       {
+           // WARNING: Make sure to give the App in the Azure Portal access to the KeyVault.
+           //          In the Identity tab: System Assigned part: turn Status On and copy the Object ID.
+           //          In the KeyVault: Access Policies > Add Access Policy > Secret Permissions Get, List and Select Principal: Object ID copied above.
+           // When running on Azure, you do NOT need to set the KeyVaultTenantId.
+           var keyVaultTenantId = configuration[ConfigurationKeys.KeyVaultTenantId];
+           if (string.IsNullOrEmpty(keyVaultTenantId))
+               return new DefaultAzureCredential();
+   
+           // When debugging local from VisualStudio AND the TenantId differs from default AZURE_TENANT_ID (in Windows settings/environment variables),
+           // you can store KeyVaultTenantId= in appsettings or in UserSecrets and read it here from the configuration (as done above)
+           var options = new DefaultAzureCredentialOptions { VisualStudioTenantId = keyVaultTenantId };
+           return new DefaultAzureCredential(options);
+       }
+   
+       private static Uri CreateKeyVaultUri(this IConfiguration configuration)
+       {
+           if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+           var keyVaultName = configuration[ConfigurationKeys.KeyVaultName];
+           if (string.IsNullOrEmpty(keyVaultName))
+               throw new InvalidOperationException($"Missing configuration setting {ConfigurationKeys.KeyVaultName}");
+   
+           return new Uri($"https://{keyVaultName}.vault.azure.net/");
+       }
+   }
+   ```
 
 5. Add the **Startup.cs** class
+   _Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
+   ```cs
+   using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+   using Microsoft.Extensions.Configuration;
+   using Microsoft.Extensions.DependencyInjection;
 
-_Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
-
-```cs
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-[assembly: FunctionsStartup(typeof(Forestbrook.FunctionWithKeyVaultAndDI.Startup))]
-
-namespace Forestbrook.FunctionWithKeyVaultAndDI;
-
-public class Startup : FunctionsStartup
-{
-    public override void Configure(IFunctionsHostBuilder builder)
-    {
-        // Configure your services here.
-    }
-
-    public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
-    {
-        // local.settings.json are automatically loaded when debugging.
-        // When running on Azure, values are loaded defined in app settings. See: https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
-        builder.ConfigurationBuilder
-            .AddAppSettingsJson(builder.GetContext())
-            .AddEnvironmentVariables()
-            .AddUserSecrets<Startup>(true)
-            .AddAzureKeyVault()
-            .Build();
-    }
-}
-```
+   [assembly: FunctionsStartup(typeof(Forestbrook.FunctionWithKeyVaultAndDI.Startup))]
+   
+   namespace Forestbrook.FunctionWithKeyVaultAndDI;
+   
+   public class Startup : FunctionsStartup
+   {
+       public override void Configure(IFunctionsHostBuilder builder)
+       {
+           // Configure your services here.
+       }
+   
+       public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+       {
+           // local.settings.json are automatically loaded when debugging.
+           // When running on Azure, values are loaded defined in app settings. See: https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
+           builder.ConfigurationBuilder
+               .AddAppSettingsJson(builder.GetContext())
+               .AddEnvironmentVariables()
+               .AddUserSecrets<Startup>(true)
+               .AddAzureKeyVault()
+               .Build();
+       }
+   }
+   ```
 
 ### Add a service: DemoService.cs
 
