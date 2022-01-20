@@ -8,7 +8,7 @@ nav_order: 3
 ## Create .NET 6 Azure Function App with Dependency Injection and the Key Vault as Configuration Provider
 {: .no_toc }
 
-_Last update: January 18, 2022_<br/>
+_Last update: January 22, 2022_<br/>
 Source code in Git: [Azure Function App Example](https://github.com/Forestbrook/FunctionWithKeyVaultAndDI){:target="_blank"}
 
 Creating a basic Azure Function App is simple, but when you have to build a professional Function App it is not always easy to find the right instructions and documentation.
@@ -76,9 +76,9 @@ If your Function App needs an Azure Storage Account, you can store the connectio
 
 ### Create a new Function App Solution in Visual Studio
 - In Visual Studio select **Create a new project** or **File** > **New** > **Project...**.
-- Select the **AzureFunctions** template and click **Next**.
+- Select the **Azure Functions** template and click **Next**.
 - Set your **Project name**, **Location** and **Solution name** and click **Create**
-- Select the Azure Functions version (V3) and the Function Type (Timer trigger). At **Storage account (AzureWebJobsStorage)** keep the value **Storage emulator**. Do NOT select the Storage Account you created above, because this will write the Storage key to the `local.settings.json` file. When the App is in production (running on Azure) it will read the Storage account connection string from the KeyVault.
+- Select the version (.NET 6) and the **Timer trigger** template. At **Storage account (AzureWebJobsStorage)** keep the value **Storage emulator**. Do NOT select the Storage Account you created above, because this will write the Storage key to the `local.settings.json` file. When the App is in production (running on Azure) it will read the Storage account connection string from the KeyVault.
 
 ### Add FunctionsStartup class with the KeyVault as a configuration provider
 
@@ -86,6 +86,9 @@ If your Function App needs an Azure Storage Account, you can store the connectio
 - Azure.Extensions.AspNetCore.Configuration.Secrets
 - Azure.Identity
 - Microsoft.Azure.Functions.Extensions
+- Microsoft.Extensions.Configuration.UserSecrets
+- Microsoft.Extensions.Hosting.Abstractions
+- Microsoft.NET.Sdk.Functions
 
 2. Add an **appsettings.json** file:
 ```json
@@ -95,44 +98,116 @@ If your Function App needs an Azure Storage Account, you can store the connectio
 ```
 - Select the appsettings.json file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**.
 
-3. Add a **Startup.cs** class
+3. Add a static class **ConfigurationKeys.cs**:
+```cs
+namespace Forestbrook.FunctionWithKeyVaultAndDI;
+
+public static class ConfigurationKeys
+{
+    /// <summary>
+    /// StorageConnectionString for Azure Function
+    /// </summary>
+    public const string AzureWebJobsStorage = "AzureWebJobsStorage";
+
+    public const string DatabaseUserId = "DbCredentials:UserId";
+    public const string KeyVaultName = "KeyVaultName";
+    public const string KeyVaultTenantId = "KeyVaultTenantId";
+    public const string StorageConnectionString = "StorageCredentials:ConnectionString";
+}
+```
+
+4. Add the static helper class **FunctionHelper.cs**:
+```cs
+using Azure.Core;
+using Azure.Identity;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+
+namespace Forestbrook.FunctionWithKeyVaultAndDI;
+
+public static class FunctionHelper
+{
+    public static IConfigurationBuilder AddAppSettingsJson(this IConfigurationBuilder builder, FunctionsHostBuilderContext context)
+    {
+        builder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), optional: true, reloadOnChange: false);
+        builder.AddJsonFile(Path.Combine(context.ApplicationRootPath, $"appsettings.{context.EnvironmentName}.json"), optional: true, reloadOnChange: false);
+        return builder;
+    }
+
+    public static IConfigurationBuilder AddAzureKeyVault(this IConfigurationBuilder builder)
+        => builder.AddAzureKeyVault(builder.Build());
+
+    /// <summary>
+    /// Make sure to add to your appsettings.json: "KeyVaultName": "your-key-vault-name"
+    /// </summary>
+    public static IConfigurationBuilder AddAzureKeyVault(this IConfigurationBuilder builder, IConfiguration configuration)
+    {
+        var keyVaultUri = configuration.CreateKeyVaultUri();
+        var keyVaultCredential = configuration.CreateKeyVaultCredential();
+        builder.AddAzureKeyVault(keyVaultUri, keyVaultCredential);
+        return builder;
+    }
+
+    private static TokenCredential CreateKeyVaultCredential(this IConfiguration configuration)
+    {
+        // WARNING: Make sure to give the App in the Azure Portal access to the KeyVault.
+        //          In the Identity tab: System Assigned part: turn Status On and copy the Object ID.
+        //          In the KeyVault: Access Policies > Add Access Policy > Secret Permissions Get, List and Select Principal: Object ID copied above.
+        // When running on Azure, you do NOT need to set the KeyVaultTenantId.
+        var keyVaultTenantId = configuration[ConfigurationKeys.KeyVaultTenantId];
+        if (string.IsNullOrEmpty(keyVaultTenantId))
+            return new DefaultAzureCredential();
+
+        // When debugging local from VisualStudio AND the TenantId differs from default AZURE_TENANT_ID (in Windows settings/environment variables),
+        // you can store KeyVaultTenantId= in appsettings or in UserSecrets and read it here from the configuration (as done above)
+        var options = new DefaultAzureCredentialOptions { VisualStudioTenantId = keyVaultTenantId };
+        return new DefaultAzureCredential(options);
+    }
+
+    private static Uri CreateKeyVaultUri(this IConfiguration configuration)
+    {
+        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+        var keyVaultName = configuration[ConfigurationKeys.KeyVaultName];
+        if (string.IsNullOrEmpty(keyVaultName))
+            throw new InvalidOperationException($"Missing configuration setting {ConfigurationKeys.KeyVaultName}");
+
+        return new Uri($"https://{keyVaultName}.vault.azure.net/");
+    }
+}
+```
+
+5. Add the **Startup.cs** class
 
 _Make sure to add `[assembly: FunctionsStartup(typeof(YourNamespace.Startup))]` at top of the file!_
 
 ```cs
-using Azure.Identity;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.IO;
 
 [assembly: FunctionsStartup(typeof(Forestbrook.FunctionWithKeyVaultAndDI.Startup))]
-namespace Forestbrook.FunctionWithKeyVaultAndDI
+
+namespace Forestbrook.FunctionWithKeyVaultAndDI;
+
+public class Startup : FunctionsStartup
 {
-    public class Startup : FunctionsStartup
+    public override void Configure(IFunctionsHostBuilder builder)
     {
-        private IConfiguration _configuration;
+        // Configure your services here.
+    }
 
-        public override void Configure(IFunctionsHostBuilder builder)
-        {
-            // Configure your services here.
-        }
-
-        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
-        {
-            var context = builder.GetContext();
-            var configurationBuilder = builder.ConfigurationBuilder;
-            configurationBuilder.AddJsonFile(Path.Combine(context.ApplicationRootPath, "appsettings.json"), true, false)
-                .AddEnvironmentVariables();
-
-            // Add the Key Vault:
-            var configuration = configurationBuilder.Build();
-            var keyVaultUri = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
-            configurationBuilder.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
-
-            _configuration = configurationBuilder.Build();
-        }
+    public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+    {
+        // local.settings.json are automatically loaded when debugging.
+        // When running on Azure, values are loaded defined in app settings. See: https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings
+        builder.ConfigurationBuilder
+            .AddAppSettingsJson(builder.GetContext())
+            .AddEnvironmentVariables()
+            .AddUserSecrets<Startup>(true)
+            .AddAzureKeyVault()
+            .Build();
     }
 }
 ```
@@ -140,12 +215,20 @@ namespace Forestbrook.FunctionWithKeyVaultAndDI
 ### Add a service: DemoService.cs
 
 ```cs
+using Microsoft.Extensions.Configuration;
+using System;
+
+namespace Forestbrook.FunctionWithKeyVaultAndDI;
+
 public class DemoService
 {
-    public DemoService(string userId, string testSecret)
+    public DemoService(IConfiguration configuration)
     {
-        UserId = userId;
-        TestSecret = testSecret;
+        if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+        // Get test secrets from the KeyVault:
+        UserId = configuration[ConfigurationKeys.DatabaseUserId];
+        TestSecret = configuration["TestSecret"];
     }
 
     public string TestSecret { get; }
@@ -157,35 +240,101 @@ public class DemoService
 Configure DemoService in Startup: In the **Configure** method add this line:
 
 ```cs
-builder.Services.AddSingleton(s => new DemoService(_configuration["DbCredentials:UserId"], _configuration["TestSecret"]));
+builder.Services.AddSingleton<DemoService>();
 ```
 
 See [Service lifetimes](https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection#service-lifetimes){:target="_blank"} to figure out when to use Singleton, Transient or Scoped.
 
-### Change the Function1 class: get rid of Static and add a Service
-- Remove Static
-- Add the **DemoService** which will be loaded by Dependancy Injection.
+### Add a HttpTrigger Function with dependancy injection **IsAliveFunction.cs**
+
+- Remove the Function1 class
 - Mind that the **Run** function can be `async Task` if you need to call Async methods.
 
 ```cs
-public class Function1
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Forestbrook.FunctionWithKeyVaultAndDI;
+
+public class IsAliveFunction
+{
+    // Test local: http://localhost:7071/api/IsAliveFunction
+    // Test on Azure: https://TODO-your-function-name-.azurewebsites.net/api/IsAliveFunction
+    private const string IsRunningMessage = "Forestbrook Function is running. Version:";
+    private readonly IHostEnvironment _hostEnvironment;
+
+    public IsAliveFunction(IHostEnvironment hostEnvironment)
+    {
+        _hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+    }
+
+    [FunctionName(nameof(IsAliveFunction))]
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequest req)
+    {
+        // Execute async tasks:
+        await Task.CompletedTask;
+
+        var version = GetType().Assembly.GetName().Version?.ToString(3);
+        var sb = new StringBuilder($"{DateTime.Now:d-M-yyyy H:mm:ss} - {IsRunningMessage} {version}<br/>");
+        sb.Append("<br/>");
+        sb.Append($"EnvironmentName = {_hostEnvironment.EnvironmentName}<br/>");
+        sb.Append($"IsDevelopment: {_hostEnvironment.IsDevelopment()}<br/>");
+        sb.Append($"IsProduction: {_hostEnvironment.IsProduction()}<br/>");
+        sb.Append($"ApplicationName = {_hostEnvironment.ApplicationName}<br/>");
+        sb.Append($"ContentRootPath = {_hostEnvironment.ContentRootPath}<br/>");
+        sb.Append("<br/>");
+        if (req.Query.Count > 0)
+        {
+            sb.Append("QUERY VALUES:<br/>");
+            foreach (var (key, value) in req.Query)
+                sb.Append($"{key} = {value}<br/>");
+        }
+
+        // Show we're alive:
+        return new ContentResult()
+        {
+            Content = sb.ToString(),
+            ContentType = "text/html",
+        };
+    }
+}
+```
+
+### Add a TimerTrigger Function with dependancy injection **TimerTriggerFunction.cs**
+
+```cs
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Text;
+
+namespace Forestbrook.FunctionWithKeyVaultAndDI;
+
+public class TimerTriggerFunction
 {
     private readonly DemoService _demoService;
 
-    public Function1(DemoService demoService)
+    public TimerTriggerFunction(DemoService demoService)
     {
         _demoService = demoService ?? throw new ArgumentNullException(nameof(demoService));
     }
 
-    [FunctionName("Function1")]
+    [FunctionName(nameof(TimerTriggerFunction))]
     public void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
     {
-        log.LogInformation(
-            @$"-----------------------------------------------
-C# Timer trigger function executed at: {DateTime.Now}
-UserId: {_demoService.UserId}
-TestSecret: {_demoService.TestSecret}
------------------------------------------------");
+        var sb = new StringBuilder();
+        sb.AppendLine("-----------------------------------------------");
+        sb.AppendLine($"C# Timer trigger function executed at: {DateTime.Now}");
+        sb.AppendLine($"UserId: {_demoService.UserId}");
+        sb.AppendLine($"TestSecret: {_demoService.TestSecret}");
+        sb.AppendLine("-----------------------------------------------");
+        log.LogInformation(sb.ToString());
     }
 }
 ```
@@ -202,28 +351,31 @@ To make this work, your Microsoft Account must have at least _Get_ and _List_ ac
 
 1. Unfortunately, when you test local, the Function App does NOT read AzureWebJobsStorage from the configuration/KeyVault, but requires it to be stored in `local.settings.json`. To prevent storing keys on your local computer, you can set AzureWebJobsStorage to `"UseDevelopmentStorage=true"` in local.settings.json.
 
-2. I have multiple accounts connected to Visual Studio and I had some issues getting this to work. I found the solution here: [DefaultAzureCredential fails when multiple accounts are available and defaulting to SharedTokenCacheCredential](https://github.com/Azure/azure-sdk-for-net/issues/8658#issuecomment-656223272){:target="_blank"}.
-- I had to set the environment variables **AZURE_USERNAME** and **AZURE_TENANT_ID**
-- I did _**not**_ have to set the DefaultAzureCredentialOptions.
+2. You might have to tell Visual Studio your Azure tennant ID by setting the environment variable **AZURE_TENANT_ID**
+    Here is were you can find your Azure **tennant ID**:
+    * Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
+    * When necessary, switch to the Active Directory with the KeyVault.
+    * Search for and select **Tenant properties**
+    * Copy the **Tenant ID**.
 
-Here is were you can find your Azure **tennant ID**:
-* Go to the [Azure Portal](https://portal.azure.com){:target="_blank"}
-* When necessary, switch to the Active Directory with the KeyVault (mostly the default directory).
-* Search for and select **Tenant properties**
-* Copy the **Tenant ID**.
+    To set the **environment variables** on your PC:
+    * In **File Explorer** right click **This PC**
+    * Select **Properties**
+    * Click **Change Settings**
+    * Click the **Advanced** tab
+    * Click **Environment variables...**.
 
-To set the **environment variables** on your PC:
-* In **File Explorer** right click **This PC**
-* Select **Properties**
-* Click **Change Settings**
-* Click the **Advanced** tab
-* Click **Environment variables...**.
+    Remember to **restart Visual Studio after setting the environment variables**.
 
-Remember to **restart Visual Studio after setting the environment variables**.
+3. If you have solutions for more than one Azure tennants, it is quite annoying to change the AZURE_TENANT_ID environment variable. That is why I added the ConfigurationKey **KeyVaultTenantId**. You can store the KeyVaultTenantId=--your-tennant--id-- in UserSecrets (in Visual Studio right-click your WebApi-project and choose **Manage User Secrets**) or in appsettings.Development.json.
 
-If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`.
+4. If you have multiple Microsoft accounts connected to Visual Studio, you might have to tell Visual Studio which account to use:
+    * Select Tools > Options...
+    * Go to option **Azure Service Authentication** > **Account Selection**
+    * Choose an account.
+    * Alternatively, you can set the environment variable **AZURE_USERNAME**
 
-Because you have to restart Visual Studio every time you change the environment variables, you can set them temporary in the Debug Properties of your project, until you found the correct values.
+5. If your account is not configured correctly, you will get an `Azure.Identity.AuthenticationFailedException`.
 
 ### Run the Function App
 
@@ -231,15 +383,12 @@ Because you have to restart Visual Studio every time you change the environment 
 
 ## Publish to Azure
 
-- Go to your Function App in the [Azure Portal](https://portal.azure.com){:target="_blank"}
-- In the **Overview** area select **Get publish profile**. This will download the publish profile to your PC.
 - In Visual Studio right click your Function App Project and choose **Publish...**
-- Select **Import Profile**, browse to the downloaded profile and select **Finish**.
+- Select target **Azure** and click **Next**.
+- Select Specific target **Azure Function App**
+- In the Publish window, make sure to select the right **Microsoft account** and **Subscription name** and select the Function App you created and select **Run from package file**. Click **Finish**.
 - Click **Publish**. This will build the Release version of you App and publish it to your Azure Function App.
-- In the Publish view in Visual Studio you can click **View streaming logs** to see the logging of your running Azure Function App!
-
 
 ## References
 
 * [Use dependency injection in .NET Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-dotnet-dependency-injection){:target="_blank"}
-* [GitHub issue: Roadmap for .NET 5 and Azure Functions V3](https://github.com/Azure/azure-functions-host/issues/6674){:target="_blank"}
