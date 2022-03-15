@@ -18,7 +18,7 @@ My specializations:
 - **Azure** and **Azure DevOps**.
 - **ASP.NET Core 6**
 - Over 2 years of experience and very enthusiastic with **Blazor WebAssembly**.
-- Over 10 years of experience with Azure, ASP.NET (Core), **Entity Framework** (Core) and (Azure) **SQL Server**.
+- Over 10 years of experience with Azure, ASP.NET (Core), **Entity Framework** (Core) and **SQL Server**.
 - Over 10 years of experience in creating native iOS and Android Apps with **Xamarin and Xamarin Forms** in C# .NET (now .NET Maui).
 - Over 20 years of **Mobile software development** experience.
 
