@@ -435,7 +435,7 @@ public class TimerTriggerFunction
 
 When you run the Function App from Visual Studio on your local computer for debugging, the Function App can magically connect to the KeyVault. This magic happens in the `DefaultAzureCredential()` which was connected to the KeyVault Secrets configuration provider added in Startup.
 
-See [Authenticating via Visual Studio](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticating-via-visual-studio){:target="_blank"}
+See [Authenticate via Visual Studio](https://learn.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticate-via-visual-studio){:target="_blank"}
 
 To make this work, your Microsoft Account must have at least _Get_ and _List_ access to the KeyVault or has the **Key Vault Secret User** role. See description above in the section [Enable access of your Function App and yourself to the KeyVault](functionwithkeyvaultanddi#enable-access-of-your-function-app-and-yourself-to-the-keyvault){:target="_blank"}.
 
@@ -489,4 +489,4 @@ To make this work, your Microsoft Account must have at least _Get_ and _List_ ac
 * [Use Key Vault references as app settings in Azure App Service and Azure Functions](https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references){:target="_blank"}
 * [Dependency injection in Azure Functions in an isolated worker process](https://learn.microsoft.com/en-us/azure/azure-functions/dotnet-isolated-process-guide#dependency-injection){:target="_blank"}
 * [App settings reference for Azure Functions](https://learn.microsoft.com/en-us/azure/azure-functions/functions-app-settings){:target="_blank"}
-* [Authenticating via Visual Studio](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticating-via-visual-studio){:target="_blank"}
+* [Authenticate via Visual Studio](https://learn.microsoft.com/en-us/dotnet/api/overview/azure/identity-readme#authenticate-via-visual-studio){:target="_blank"}
