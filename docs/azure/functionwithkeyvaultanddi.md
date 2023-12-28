@@ -111,7 +111,7 @@ _REMARK: The latest toolsets for functions might not yet be installed. Go to Too
 
 The generated solution contains a `.gitignore` file to prevent `local.settings.json` is stored in your git-repo. This is important when you add secrets to your local.settings.json. **Never store secrets in a git repository! You will not be able to remove them ever!**. But I advise not to store secrets in local.settings.json because you might want the local.settings.json in git. Otherwise your colleague (or you on another machine) will have trouble with local testing because the setting for the storage emulator is missing. Later in this article I will show how to use your Microsoft account and the UserSecrets section to use secrets locally in your configuration.
 
-### Add FunctionsStartup class with the KeyVault as a configuration provider
+### Update Program class with the KeyVault as a configuration provider
 
 1. Add Nuget packages:
 - Azure.Extensions.AspNetCore.Configuration.Secrets
@@ -127,9 +127,9 @@ The generated solution contains a `.gitignore` file to prevent `local.settings.j
 ```json
 {
     "KeyVaultName": "--your-key-vault-name--"
-    // In source example: add some test settings to show the priority in the configuration providers
 }
 ```
+- In source example code: add some test settings to show the priority in the configuration providers
 - Select the appsettings.json file in Solution Explorer and in the Properties at **Copy to Output Directory** select **Copy if newer**. (Keep Build Action: None).
 - You can also add `appsettings.Development.json` with development specific settings and `appsettings.Production.json` with production specific settings. If you use different key vaults for development and production, move the KeyVaultName setting to these files.
 

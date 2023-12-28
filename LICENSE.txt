@@ -1,4 +1,4 @@
-Copyright 2010-2020, Marcel Wolterbeek, Amsterdam, The Netherlands
+Copyright 2010-2024, Marcel Wolterbeek, Amsterdam, The Netherlands
 
 The MIT License (MIT)
 
