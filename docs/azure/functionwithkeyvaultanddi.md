@@ -11,7 +11,7 @@ nav_order: 3
 _Last update: December 28, 2023_<br/>
 Source code in Git: [Azure Function App Example](https://github.com/Forestbrook/FunctionWithKeyVaultAndDI){:target="_blank"}
 
-__"I found your Github work on using Azure Key Vault and Dependency Injection and wanted to say it is the most useful Azure tutorial I have ever found on any subject. Great work."__ Del Smith (via LinkedIn)
+_"I found your Github work on using Azure Key Vault and Dependency Injection and wanted to say it is the most useful Azure tutorial I have ever found on any subject. Great work."_ **Del Smith** (via LinkedIn).
 
 Creating a basic Azure Function App is simple, but when you have to build a professional Function App it is not always easy to find the right instructions and documentation.
 
