@@ -11,12 +11,14 @@ nav_order: 6
 <br/>
 <a href="https://www.linkedin.com/in/marcel-wolterbeek-8338802/" target="_blank"><img src="https://www.forestbrook.net/assets/images/LI-Logo.png" width="100" /> - Marcel Wolterbeek on LinkedIn</a>
 
-<table>
-  <tr>
-    <td><img src="https://www.forestbrook.net/assets/images/Marcel.jpg" width="100" /></td>
-    <td style="vertical-align:top">I am a free-lance software specialist and architect. Designing and writing professional, clean, and simple code in C# .NET is my passion.</td>
-  </tr>
-</table>
+<div>
+  <table>
+    <tr>
+      <td><img src="https://www.forestbrook.net/assets/images/Marcel.jpg" width="100" /></td>
+      <td style="vertical-align:top">I am a free-lance software specialist and architect. Designing and writing professional, clean, and simple code in C# .NET is my passion.</td>
+    </tr>
+  </table>
+</div>
 
 My specializations:
 
