@@ -8,10 +8,8 @@ nav_order: 3
 ## Create .NET 6/7/8 Azure Function App with Dependency Injection and the Key Vault as Configuration Provider
 {: .no_toc }
 
-_Last update: December 28, 2023_<br/>
+_Last update: Januari 3, 2024_<br/>
 Source code in Git: [Azure Function App Example](https://github.com/Forestbrook/FunctionWithKeyVaultAndDI){:target="_blank"}
-
-_"I found your Github work on using Azure Key Vault and Dependency Injection and wanted to say it is the most useful Azure tutorial I have ever found on any subject. Great work."_ **Del Smith** (via LinkedIn).
 
 Creating a basic Azure Function App is simple, but when you have to build a professional Function App it is not always easy to find the right instructions and documentation.
 

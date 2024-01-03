@@ -11,16 +11,19 @@ nav_order: 6
 <br/>
 <a href="https://www.linkedin.com/in/marcel-wolterbeek-8338802/" target="_blank"><img src="https://www.forestbrook.net/assets/images/LI-Logo.png" width="100" /> - Marcel Wolterbeek on LinkedIn</a>
 
-I am a free-lance software specialist. Writing professional, clean, and simple code in C# .NET is my passion.
+<img src="https://www.forestbrook.net/assets/images/Marcel.jpg" width="100" /> I am a free-lance software specialist and architect. Designing and writing professional, clean, and simple code in C# .NET is my passion.
 
 My specializations:
 
+- **.NET full stack architecture: Azure ASP.NET Core => Blazor => .NET Maui**
 - **Azure** and **Azure DevOps**.
-- **ASP.NET Core 6**
-- Over 2 years of experience and very enthusiastic with **Blazor WebAssembly**.
-- Over 10 years of experience with Azure, ASP.NET (Core), **Entity Framework** (Core) and **SQL Server**.
-- Over 10 years of experience in creating native iOS and Android Apps with **Xamarin and Xamarin Forms** in C# .NET (now .NET Maui).
-- Over 20 years of **Mobile software development** experience.
+- **.NET Maui**
+- **Blazor WebAssembly**
+- **ASP.NET Core 8**
+- 25 years of **Mobile software development** experience.
+- 12 years of experience in creating native iOS and Android Apps with **.NET Maui, Xamarin and Xamarin Forms** in C# .NET.
+- 4 years of experience and very enthusiastic with **Blazor WebAssembly**.
+- 14 years of experience with Azure, ASP.NET Core, **Entity Framework** Core and **SQL Server**.
 
 ## Table of contents
 {: .no_toc .text-delta }
@@ -40,14 +43,14 @@ I started with Mobile Development in 1998, when cellphones were more like bricks
 
 ## Hire me
 
-You can hire me just to help you to get started, to help with a complex part of a solution or for a project where you need a specialist in my area. I'm well prepared to do my work remote, but if you are located in (or close to) Amsterdam, The Netherlands, I can help you on-site if you want to. I'm committed to a long-term relationship with my customers, even when you only need me occasionally. I can:
+You can hire me just to help you to getting started, to help with a complex part of a solution or for a project where you need a specialist in my area. I'm well prepared to do my work remote, but if you are located in (or close to) Amsterdam, The Netherlands, I can help you on-site if you want to. I'm committed to a long-term relationship with my customers, even when you only need me occasionally. I can:
 
+- Help you getting started with .NET Maui, migrate from Xamarin to .NET Maui or to smooth out a stalled .NET Maui project.
+- Help you getting started with Blazor WebAssembly.
 - Help you to migrate your .NET solutions to Microsoft Azure.
 - Help to setup your Azure and Azure DevOps environment efficiently, including CI/CD.
-- Help you upgrade to ASP.NET Core 6.
-- Help you getting started with Blazor.
-- Help you getting started with Xamarin or to smooth out a stalled Xamarin project.
-- Help to build Xamarin and/or Blazor components.
+- Help you upgrade to ASP.NET Core 8.
+- Help to build .NET Maui and/or Blazor components.
 - Help you when you need a specialist in my area for a shorter or longer period.
 
 Drop me an email at Marcel.Wolterbeek@forestcreek.nl.
